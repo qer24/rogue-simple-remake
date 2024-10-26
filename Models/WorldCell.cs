@@ -2,7 +2,7 @@
 
 namespace ProjektFB.Models;
 
-public struct WorldCell
+public class WorldCell
 {
     public Vector2Int Position;
 }
