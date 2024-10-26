@@ -1,6 +1,8 @@
-﻿namespace ProjektFB.Models;
+﻿using ProjektFB.Utils;
 
-public class WorldCell
+namespace ProjektFB.Models;
+
+public struct WorldCell
 {
-    
+    public Vector2Int Position;
 }
