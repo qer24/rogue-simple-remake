@@ -1,6 +1,6 @@
-﻿using ProjektFB.Models;
+﻿using RogueProject.Models;
 
-namespace ProjektFB.Utils;
+namespace RogueProject.Utils;
 
 public class Singleton<T>
 {

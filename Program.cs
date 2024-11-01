@@ -1,9 +1,9 @@
-﻿using ProjektFB.Controllers;
-using ProjektFB.Models;
-using ProjektFB.Utils;
-using ProjektFB.Views;
+﻿using RogueProject.Utils;
+using RogueProject.Controllers;
+using RogueProject.Models;
+using RogueProject.Views;
 
-namespace ProjektFB;
+namespace RogueProject;
 
 public static class Program
 {
@@ -13,9 +13,11 @@ public static class Program
         var worldController = new WorldController(world);
         var playerController = new PlayerController(world, world.Entities[0]);
 
+        var worldRenderer = new WorldRenderer();
+
         while (true)
         {
-            WorldRenderer.RenderWorld(world);
+            worldRenderer.RenderWorld(world);
             playerController.Update();
             worldController.Update();
         }

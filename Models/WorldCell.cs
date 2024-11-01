@@ -1,8 +1,19 @@
-﻿using ProjektFB.Utils;
+﻿using RogueProject.Utils;
 
-namespace ProjektFB.Models;
+namespace RogueProject.Models;
 
-public class WorldCell
+public struct WorldCell
 {
     public Vector2Int Position;
+    public TileType TileType;
+}
+
+public enum TileType
+{
+    Empty,
+    WallTop,
+    WallBottom,
+    WallVertical,
+    Door,
+    Floor
 }

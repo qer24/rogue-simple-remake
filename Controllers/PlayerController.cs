@@ -1,7 +1,7 @@
-﻿using ProjektFB.Models;
-using ProjektFB.Utils;
+﻿using RogueProject.Models;
+using RogueProject.Utils;
 
-namespace ProjektFB.Controllers;
+namespace RogueProject.Controllers;
 
 public class PlayerController(World world, Entity player) : Controller
 {
@@ -24,12 +24,12 @@ public class PlayerController(World world, Entity player) : Controller
         var input = GetInput();
         var newPosition = player.Position + input;
 
-        if (newPosition.x < 1 || newPosition.x >= Constants.WORLD_SIZE.x - 1 ||
-            newPosition.y < 1 || newPosition.y >= Constants.WORLD_SIZE.y - 1)
-        {
-            return;
-        }
+        var newCell = world.GetCell(newPosition);
+        var tileType = newCell.TileType;
 
-        player.Position = newPosition;
+        if (tileType != TileType.WallTop && tileType != TileType.WallBottom && tileType != TileType.WallVertical)
+        {
+            player.Position = newPosition;
+        }
     }
 }

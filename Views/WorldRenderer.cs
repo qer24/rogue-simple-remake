@@ -1,52 +1,68 @@
-﻿using ProjektFB.Models;
+﻿using RogueProject.Models;
+using RogueProject.Utils;
 using Spectre.Console;
 
-namespace ProjektFB.Views;
+namespace RogueProject.Views;
 
-public static class WorldRenderer
+public class WorldRenderer
 {
-    public static void RenderWorld(World world)
+    public WorldRenderer()
+    {
+        AnsiConsole.Cursor.Hide();
+        AnsiConsole.Clear();
+
+        // Set the size of the console window
+        Console.WindowHeight = Constants.WORLD_SIZE.y + 1;
+        Console.WindowWidth = Constants.WORLD_SIZE.x + 1;
+    }
+
+    public void RenderWorld(World world)
     {
         AnsiConsole.Clear();
 
         var sizeX = Constants.WORLD_SIZE.x;
         var sizeY = Constants.WORLD_SIZE.y;
 
-        var table = new Table();
-
-        for (int x = 0; x < sizeX; x++)
-        {
-            table.AddColumn("");
-        }
+        var grid = new string[sizeY, sizeX];
 
         for (int y = 0; y < sizeY; y++)
         {
-            var row = new string[sizeX];
-            for (int x = 0; x < row.Length; x++)
+            for (int x = 0; x < sizeX; x++)
             {
                 var entity = world.Entities.FirstOrDefault(e => e.Position.x == x && e.Position.y == y);
 
                 if (entity != null)
                 {
-                    row[x] = "@";
-                }
-                else if (x == 0 || x == sizeX - 1 || y == 0 || y == sizeY - 1)
-                {
-                    row[x] = ".";
+                    grid[y, x] = "@";
                 }
                 else
                 {
-                    row[x] = " ";
+                    var tileType = world.GetCell(new Vector2Int(x, y)).TileType;
+                    grid[y, x] = GetTileChar(tileType).ToString();
                 }
             }
-            table.AddRow(row);
         }
 
-        table.HideHeaders();
-        table.Border(TableBorder.None);
-        table.HideRowSeparators();
-        table.Alignment(Justify.Center);
+        for (int y = 0; y < sizeY; y++)
+        {
+            for (int x = 0; x < sizeX; x++)
+            {
+                AnsiConsole.Write(new Markup(grid[y, x]));
+            }
+            AnsiConsole.WriteLine();
+        }
+    }
 
-        AnsiConsole.Write(table);
+    private static char GetTileChar(TileType tileType)
+    {
+        return tileType switch
+        {
+            TileType.Floor => '.',
+            TileType.WallTop => '_',
+            TileType.WallBottom => '\u00af',
+            TileType.WallVertical => '|',
+            TileType.Empty => ' ',
+            _ => '?'
+        };
     }
 }

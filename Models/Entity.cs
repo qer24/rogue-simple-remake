@@ -1,6 +1,6 @@
-﻿using ProjektFB.Utils;
+﻿using RogueProject.Utils;
 
-namespace ProjektFB.Models;
+namespace RogueProject.Models;
 
 public class Entity(string name, Vector2Int position)
 {

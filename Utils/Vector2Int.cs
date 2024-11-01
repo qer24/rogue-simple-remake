@@ -3,7 +3,7 @@ using System;
 using System.Globalization;
 using System.Numerics;
 
-namespace ProjektFB.Utils;
+namespace RogueProject.Utils;
 
 // Klasa z silnika Unity
 public struct Vector2Int

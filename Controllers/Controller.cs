@@ -1,4 +1,4 @@
-﻿namespace ProjektFB.Controllers;
+﻿namespace RogueProject.Controllers;
 
 public abstract class Controller
 {

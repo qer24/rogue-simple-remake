@@ -1,12 +1,17 @@
-﻿using ProjektFB.Controllers;
-using ProjektFB.Utils;
-using ProjektFB.Views;
+﻿using RogueProject.Controllers;
+using RogueProject.Views;
+using RogueProject.Utils;
 
-namespace ProjektFB.Models;
+namespace RogueProject.Models;
 
 // Singleton przechowujacy swiat gry
 public class World : Singleton<World>
 {
     public WorldCell[,] WorldGrid;
     public List<Entity> Entities;
+
+    public WorldCell GetCell(Vector2Int position)
+    {
+        return WorldGrid[position.x, position.y];
+    }
 }
