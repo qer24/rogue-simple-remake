@@ -4,7 +4,6 @@ using RogueProject.Utils;
 
 namespace RogueProject.Models;
 
-// Singleton przechowujacy swiat gry
 public class World : Singleton<World>
 {
     public WorldCell[,] WorldGrid;

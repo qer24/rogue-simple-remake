@@ -27,7 +27,7 @@ public class PlayerController(World world, Entity player) : Controller
         var newCell = world.GetCell(newPosition);
         var tileType = newCell.TileType;
 
-        if (tileType != TileType.WallTop && tileType != TileType.WallBottom && tileType != TileType.WallVertical)
+        if (tileType != TileType.WallTop && tileType != TileType.WallBottom && tileType != TileType.WallVertical && tileType != TileType.Empty)
         {
             player.Position = newPosition;
         }

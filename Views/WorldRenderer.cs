@@ -58,9 +58,11 @@ public class WorldRenderer
         return tileType switch
         {
             TileType.Floor => '.',
-            TileType.WallTop => '_',
-            TileType.WallBottom => '\u00af',
+            TileType.WallTop => '-',
+            TileType.WallBottom => '-',
             TileType.WallVertical => '|',
+            TileType.Door => '+',
+            TileType.Corridor => '#',
             TileType.Empty => ' ',
             _ => '?'
         };

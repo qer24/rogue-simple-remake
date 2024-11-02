@@ -15,5 +15,6 @@ public enum TileType
     WallBottom,
     WallVertical,
     Door,
+    Corridor,
     Floor
 }
