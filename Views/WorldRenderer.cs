@@ -1,29 +1,25 @@
-﻿using RogueProject.Models;
+﻿using FastConsole;
+using RogueProject.Models;
 using RogueProject.Utils;
-using Spectre.Console;
 
 namespace RogueProject.Views;
 
 public class WorldRenderer
 {
+    private const ConsoleColor FOREGROUND_COLOR = ConsoleColor.White;
+    private const ConsoleColor BACKGROUND_COLOR = ConsoleColor.Black;
+
     public WorldRenderer()
     {
-        AnsiConsole.Cursor.Hide();
-        AnsiConsole.Clear();
-
-        // Set the size of the console window
-        Console.WindowHeight = Constants.WORLD_SIZE.y + 1;
-        Console.WindowWidth = Constants.WORLD_SIZE.x + 1;
+        FConsole.Initialize("Rogue Project", FOREGROUND_COLOR, BACKGROUND_COLOR);
     }
 
     public void RenderWorld(World world)
     {
-        AnsiConsole.Clear();
-
         var sizeX = Constants.WORLD_SIZE.x;
         var sizeY = Constants.WORLD_SIZE.y;
 
-        var grid = new string[sizeY, sizeX];
+        var grid = new char[sizeY, sizeX];
 
         for (int y = 0; y < sizeY; y++)
         {
@@ -33,12 +29,12 @@ public class WorldRenderer
 
                 if (entity != null)
                 {
-                    grid[y, x] = "@";
+                    grid[y, x] = '@';
                 }
                 else
                 {
                     var tileType = world.GetCell(new Vector2Int(x, y)).TileType;
-                    grid[y, x] = GetTileChar(tileType).ToString();
+                    grid[y, x] = GetTileChar(tileType);
                 }
             }
         }
@@ -47,10 +43,11 @@ public class WorldRenderer
         {
             for (int x = 0; x < sizeX; x++)
             {
-                AnsiConsole.Write(new Markup(grid[y, x]));
+                FConsole.SetChar((short)x, (short)y, grid[y, x], FOREGROUND_COLOR, BACKGROUND_COLOR);
             }
-            AnsiConsole.WriteLine();
         }
+
+        FConsole.DrawBuffer();
     }
 
     private static char GetTileChar(TileType tileType)
