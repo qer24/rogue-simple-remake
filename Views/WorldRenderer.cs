@@ -11,6 +11,9 @@ public class WorldRenderer
 
     public WorldRenderer()
     {
+        Console.WindowHeight = Constants.WORLD_SIZE.y + 1;
+        Console.WindowWidth = Constants.WORLD_SIZE.x + 1;
+
         FConsole.Initialize("Rogue Project", FOREGROUND_COLOR, BACKGROUND_COLOR);
     }
 
@@ -43,7 +46,7 @@ public class WorldRenderer
         {
             for (int x = 0; x < sizeX; x++)
             {
-                FConsole.SetChar((short)x, (short)y, grid[y, x], FOREGROUND_COLOR, BACKGROUND_COLOR);
+                FConsole.SetChar(x, y, grid[y, x], FOREGROUND_COLOR, BACKGROUND_COLOR);
             }
         }
 

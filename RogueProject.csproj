@@ -7,9 +7,4 @@
     <RootNamespace>ProjektFB</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Spectre.Console" Version="0.49.1" />
-    <PackageReference Include="Spectre.Console.Cli" Version="0.49.1" />
-  </ItemGroup>
-
 </Project>

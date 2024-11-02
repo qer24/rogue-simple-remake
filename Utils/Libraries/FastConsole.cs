@@ -42,7 +42,7 @@ public static class FConsole {
     public static void Initialize(string title, ConsoleColor foreground = ConsoleColor.Gray, ConsoleColor background = ConsoleColor.Black) {
         Console.OutputEncoding = System.Text.Encoding.Unicode;
         Console.Title = title;
-        Maximize();
+        //Maximize();
         Console.CursorVisible = false;
 
         GetOutputHandle();
