@@ -6,7 +6,17 @@ public struct WorldCell
 {
     public Vector2Int Position;
     public TileType TileType;
+
     public bool Visible;
+    public bool Revealed;
+
+    public bool DoRender()
+    {
+        // For floor to be visible, it must be revealed aswell as visible
+        // For any other tile to be visible, it just must be revealed
+
+        return TileType == TileType.Floor ? Revealed && Visible : Revealed;
+    }
 }
 
 public enum TileType

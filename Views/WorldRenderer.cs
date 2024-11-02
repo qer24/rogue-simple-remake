@@ -36,7 +36,7 @@ public class WorldRenderer
                 {
                     var cell = world.GetCell(new Vector2Int(x, y));
 
-                    if (!cell.Visible)
+                    if (!cell.DoRender())
                     {
                         FConsole.SetChar(x, y, ' ', FOREGROUND_COLOR, BACKGROUND_COLOR);
                         continue;

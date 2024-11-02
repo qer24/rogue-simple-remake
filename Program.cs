@@ -15,11 +15,15 @@ public static class Program
 
         var worldRenderer = new WorldRenderer();
 
+        // force first update before players makes any input
+        worldController.Update();
+        worldRenderer.RenderWorld(world);
+
         while (true)
         {
-            worldRenderer.RenderWorld(world);
             playerController.Update();
             worldController.Update();
+            worldRenderer.RenderWorld(world);
         }
     }
 }

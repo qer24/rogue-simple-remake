@@ -47,7 +47,8 @@ public class WorldController : Controller
                 {
                     Position = new Vector2Int(x, y),
                     TileType = TileType.Empty,
-                    Visible = false
+                    Visible = false,
+                    Revealed = false
                 };
             }
         }
@@ -60,7 +61,12 @@ public class WorldController : Controller
 
     public override void Update()
     {
-        // world visiblity
+        PlayerLineOfSight();
+        PlayerCorridorReveal();
+    }
+
+    private void PlayerLineOfSight()
+    {
         var player = _world.Entities[0];
 
         // hide all visible cells
@@ -91,6 +97,31 @@ public class WorldController : Controller
                     _visibleCells.Add(cell.Position);
                     _world.WorldGrid[x, y].Visible = true;
                 }
+            }
+        }
+    }
+
+    private void PlayerCorridorReveal()
+    {
+        // get surrounding cells of player
+        var player = _world.Entities[0];
+
+        var surroundingCells = new[]
+        {
+            new Vector2Int(player.Position.x, player.Position.y - 1),
+            new Vector2Int(player.Position.x - 1, player.Position.y),
+            new Vector2Int(player.Position.x + 1, player.Position.y),
+            new Vector2Int(player.Position.x, player.Position.y + 1)
+        };
+
+        foreach (var cell in surroundingCells)
+        {
+            if (cell.x < 0 || cell.x >= Constants.WORLD_SIZE.x || cell.y < 0 || cell.y >= Constants.WORLD_SIZE.y) continue;
+
+            var worldCell = _world.WorldGrid[cell.x, cell.y];
+            if (worldCell.TileType == TileType.Corridor)
+            {
+                _world.WorldGrid[cell.x, cell.y].Revealed = true;
             }
         }
     }
@@ -159,8 +190,6 @@ public class WorldController : Controller
             {
                 for (int y = room.Position.y; y < room.Position.y + room.Size.y; y++)
                 {
-                    _world.WorldGrid[x, y].Visible = true;
-
                     if (y == room.Position.y)
                     {
                         _world.WorldGrid[x, y].TileType = TileType.WallTop;
@@ -176,7 +205,6 @@ public class WorldController : Controller
                     else
                     {
                         _world.WorldGrid[x, y].TileType = TileType.Floor;
-                        _world.WorldGrid[x, y].Visible = false;
                     }
                 }
             }
@@ -346,5 +374,7 @@ public class WorldController : Controller
         var randomRoomIndex = rng.Next(0, remainingRooms.Length);
         var playerRoom = remainingRooms[randomRoomIndex];
         _playerStartPos = playerRoom.Position + playerRoom.Size / 2;
+
+        _world.RevealRoom(playerRoom);
     }
 }
