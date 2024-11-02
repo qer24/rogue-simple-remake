@@ -8,6 +8,8 @@ public class WorldController : Controller
     private readonly World _world;
     private Vector2Int _playerStartPos;
 
+    private readonly HashSet<Vector2Int> _visibleCells = [];
+
     // rooms i, j are neighbours if _neighbourMatrix[i, j] is true
     private readonly bool[,] _neighbourMatrix = new bool[9, 9]
     {
@@ -21,9 +23,6 @@ public class WorldController : Controller
         { false, false, false, false, true,  false, true,  false, true  },
         { false, false, false, false, false, true,  false, true,  false }
     };
-
-    private const int MAX_GONE_ROOMS = 3;
-    private const int RANDOM_CONNECTION_COUNT = 2;
 
     public WorldController(World world)
     {
@@ -47,7 +46,8 @@ public class WorldController : Controller
                 _world.WorldGrid[x, y] = new WorldCell
                 {
                     Position = new Vector2Int(x, y),
-                    TileType = TileType.Empty
+                    TileType = TileType.Empty,
+                    Visible = false
                 };
             }
         }
@@ -56,6 +56,43 @@ public class WorldController : Controller
 
         var player = new Entity("Player", _playerStartPos);
         _world.Entities.Add(player);
+    }
+
+    public override void Update()
+    {
+        // world visiblity
+        var player = _world.Entities[0];
+
+        // hide all visible cells
+        foreach (var cell in _visibleCells)
+        {
+            var x = cell.x;
+            var y = cell.y;
+
+            _world.WorldGrid[x, y].Visible = false;
+        }
+
+        // add cells within player's vision to visible cells
+        _visibleCells.Clear();
+
+        const int playerVision = Constants.FLOOR_REVEAL_DISTANCE;
+
+        for (int x = player.Position.x - playerVision; x < player.Position.x + playerVision; x++)
+        {
+            for (int y = player.Position.y - playerVision; y < player.Position.y + playerVision; y++)
+            {
+                if (x < 0 || x >= Constants.WORLD_SIZE.x || y < 0 || y >= Constants.WORLD_SIZE.y) continue;
+
+                var cell = _world.WorldGrid[x, y];
+                if (cell.TileType != TileType.Floor) continue;
+
+                if (Vector2Int.Distance(player.Position, cell.Position) < playerVision)
+                {
+                    _visibleCells.Add(cell.Position);
+                    _world.WorldGrid[x, y].Visible = true;
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -76,6 +113,7 @@ public class WorldController : Controller
         // generate rooms
         var rng = new Random();
         var goneCount = 0;
+        var maxGoneRooms = rng.Next(1, Constants.MAX_GONE_ROOMS + 1);
         for (int i = 0; i < rooms.Length; i++)
         {
             // rooms[i].Position = IndexToPosition(i); // top left corner
@@ -90,7 +128,7 @@ public class WorldController : Controller
 
             rooms[i] = new Room(position, new Vector2Int(width, height));
 
-            if (goneCount < MAX_GONE_ROOMS)
+            if (goneCount < maxGoneRooms)
             {
                 var isGone = rng.Next(0, 2) == 1;
                 if (!isGone) continue;
@@ -105,61 +143,10 @@ public class WorldController : Controller
 
         // set wall and floor tiles
         SetRooms(remainingRooms);
+        _world.Rooms = remainingRooms;
 
         var mst = GenerateSpanningTree(rooms, remainingRooms, rng);
-
-        var sizeX = Constants.WORLD_SIZE.x;
-        var sizeY = Constants.WORLD_SIZE.y;
-
-        var aStarGrid = new Grid2D<AStar2D.Node>(new Vector2Int(sizeX, sizeY));
-        var aStar = new AStar2D(aStarGrid);
-
-        foreach ((int i, int j) in mst)
-        {
-            var roomA = rooms[i];
-            var roomB = rooms[j];
-
-            var startPos = roomA.Position + roomA.Size / 2;
-            var endPos = roomB.Position + roomB.Size / 2;
-
-            var path = aStar.FindPath(startPos, endPos, (_, neighbour) =>
-            {
-                var pathCost = new AStar2D.PathCost
-                {
-                    cost = Vector2Int.Distance(neighbour.Position, endPos) //heuristic
-                };
-
-                var pos = neighbour.Position;
-                // cost function
-                // prioritize going through already made paths
-                // walls are more expensive to go through
-                pathCost.cost += _world.WorldGrid[pos.x, pos.y].TileType switch
-                {
-                    TileType.WallTop => 1000,
-                    TileType.WallBottom => 1000,
-                    TileType.WallVertical => 1000,
-                    TileType.Floor => 1,
-                    TileType.Door => 1,
-                    TileType.Empty => 10,
-                    TileType.Corridor => 5,
-                    _ => 1000
-                };
-
-                pathCost.traversable = true;
-
-                return pathCost;
-            });
-
-            foreach (var pos in path)
-            {
-                _world.WorldGrid[pos.x, pos.y].TileType = _world.WorldGrid[pos.x, pos.y].TileType switch
-                {
-                    TileType.Empty                                                   => TileType.Corridor,
-                    TileType.WallTop or TileType.WallBottom or TileType.WallVertical => TileType.Door,
-                    _                                                                => _world.WorldGrid[pos.x, pos.y].TileType
-                };
-            }
-        }
+        ConnectRooms(mst, rooms);
 
         SpawnPlayer(rng, remainingRooms);
     }
@@ -172,6 +159,8 @@ public class WorldController : Controller
             {
                 for (int y = room.Position.y; y < room.Position.y + room.Size.y; y++)
                 {
+                    _world.WorldGrid[x, y].Visible = true;
+
                     if (y == room.Position.y)
                     {
                         _world.WorldGrid[x, y].TileType = TileType.WallTop;
@@ -187,6 +176,7 @@ public class WorldController : Controller
                     else
                     {
                         _world.WorldGrid[x, y].TileType = TileType.Floor;
+                        _world.WorldGrid[x, y].Visible = false;
                     }
                 }
             }
@@ -265,7 +255,7 @@ public class WorldController : Controller
         var remainingIndexes = remainingRooms.Select(r => Array.IndexOf(rooms, r)).ToArray();
 
         // also connect RANDOM_CONNECTION_COUNT random rooms
-        for (int i = 0; i < RANDOM_CONNECTION_COUNT; i++)
+        for (int i = 0; i < Constants.RANDOM_CONNECTION_COUNT; i++)
         {
             var randomIndex1 = rng.Next(0, remainingIndexes.Length);
             var randomIndex2 = rng.Next(0, remainingIndexes.Length);
@@ -287,6 +277,67 @@ public class WorldController : Controller
         }
 
         return mst;
+    }
+
+    private void ConnectRooms(List<(int i, int j)> mst, Room[] rooms)
+    {
+        var sizeX = Constants.WORLD_SIZE.x;
+        var sizeY = Constants.WORLD_SIZE.y;
+
+        var aStarGrid = new Grid2D<AStar2D.Node>(new Vector2Int(sizeX, sizeY));
+        var aStar = new AStar2D(aStarGrid);
+
+        foreach ((int i, int j) in mst)
+        {
+            var roomA = rooms[i];
+            var roomB = rooms[j];
+
+            var startPos = roomA.Position + roomA.Size / 2;
+            var endPos = roomB.Position + roomB.Size / 2;
+
+            var path = aStar.FindPath(startPos, endPos, (_, neighbour) =>
+            {
+                var pathCost = new AStar2D.PathCost
+                {
+                    cost = Vector2Int.Distance(neighbour.Position, endPos) //heuristic
+                };
+
+                var pos = neighbour.Position;
+                // cost function
+                // prioritize going through already made paths
+                // walls are more expensive to go through
+                pathCost.cost += _world.WorldGrid[pos.x, pos.y].TileType switch
+                {
+                    TileType.WallTop      => 1000,
+                    TileType.WallBottom   => 1000,
+                    TileType.WallVertical => 1000,
+                    TileType.Floor        => 1,
+                    TileType.Door         => 750,
+                    TileType.Empty        => 10,
+                    TileType.Corridor     => 5,
+                    _                     => 1000
+                };
+
+                pathCost.traversable = true;
+
+                return pathCost;
+            });
+
+            foreach (var pos in path)
+            {
+                _world.WorldGrid[pos.x, pos.y].TileType = _world.WorldGrid[pos.x, pos.y].TileType switch
+                {
+                    TileType.Empty                                                   => TileType.Corridor,
+                    TileType.WallTop or TileType.WallBottom or TileType.WallVertical => TileType.Door,
+                    _                                                                => _world.WorldGrid[pos.x, pos.y].TileType
+                };
+
+                if (_world.WorldGrid[pos.x, pos.y].TileType == TileType.Corridor)
+                {
+                    _world.WorldGrid[pos.x, pos.y].Visible = true;
+                }
+            }
+        }
     }
 
     private void SpawnPlayer(Random rng, Room[] remainingRooms)

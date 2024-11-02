@@ -6,6 +6,7 @@ public struct WorldCell
 {
     public Vector2Int Position;
     public TileType TileType;
+    public bool Visible;
 }
 
 public enum TileType

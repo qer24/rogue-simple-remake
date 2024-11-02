@@ -6,6 +6,7 @@ namespace RogueProject.Models;
 
 public class World : Singleton<World>
 {
+    public Room[] Rooms;
     public WorldCell[,] WorldGrid;
     public List<Entity> Entities;
 

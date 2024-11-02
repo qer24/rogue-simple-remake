@@ -22,8 +22,6 @@ public class WorldRenderer
         var sizeX = Constants.WORLD_SIZE.x;
         var sizeY = Constants.WORLD_SIZE.y;
 
-        var grid = new char[sizeY, sizeX];
-
         for (int y = 0; y < sizeY; y++)
         {
             for (int x = 0; x < sizeX; x++)
@@ -32,21 +30,22 @@ public class WorldRenderer
 
                 if (entity != null)
                 {
-                    grid[y, x] = '@';
+                    FConsole.SetChar(x, y, '@', ConsoleColor.Yellow, BACKGROUND_COLOR);
                 }
                 else
                 {
-                    var tileType = world.GetCell(new Vector2Int(x, y)).TileType;
-                    grid[y, x] = GetTileChar(tileType);
-                }
-            }
-        }
+                    var cell = world.GetCell(new Vector2Int(x, y));
 
-        for (int y = 0; y < sizeY; y++)
-        {
-            for (int x = 0; x < sizeX; x++)
-            {
-                FConsole.SetChar(x, y, grid[y, x], FOREGROUND_COLOR, BACKGROUND_COLOR);
+                    if (!cell.Visible)
+                    {
+                        FConsole.SetChar(x, y, ' ', FOREGROUND_COLOR, BACKGROUND_COLOR);
+                        continue;
+                    }
+
+                    var tileType = cell.TileType;
+                    var tileChar = GetTileChar(tileType);
+                    FConsole.SetChar(x, y, tileChar, FOREGROUND_COLOR, BACKGROUND_COLOR);
+                }
             }
         }
 

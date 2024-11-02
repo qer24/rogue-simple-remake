@@ -9,9 +9,6 @@
   <component name="ChangeListManager">
     <list default="true" id="00886110-e647-4671-9165-adf05c11ed2a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProjektFB/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProjektFB/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RogueProject.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/RogueProject.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/Libraries/FastConsole.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/Libraries/FastConsole.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Views/WorldRenderer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Views/WorldRenderer.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,7 +114,7 @@
       <option name="presentableId" value="Default" />
       <updated>1729963658262</updated>
       <workItem from="1729963658377" duration="4844000" />
-      <workItem from="1730471320915" duration="12982000" />
+      <workItem from="1730471320915" duration="13170000" />
     </task>
     <servers />
   </component>
