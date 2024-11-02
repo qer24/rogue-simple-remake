@@ -63,6 +63,7 @@ public class WorldController : Controller
     {
         PlayerLineOfSight();
         PlayerCorridorReveal();
+        PlayerRoomReveal();
     }
 
     private void PlayerLineOfSight()
@@ -103,25 +104,28 @@ public class WorldController : Controller
 
     private void PlayerCorridorReveal()
     {
-        // get surrounding cells of player
-        var player = _world.Entities[0];
-
-        var surroundingCells = new[]
+        // reveal corridors
+        foreach (var cell in _world.GetPlayerSurroundedTiles())
         {
-            new Vector2Int(player.Position.x, player.Position.y - 1),
-            new Vector2Int(player.Position.x - 1, player.Position.y),
-            new Vector2Int(player.Position.x + 1, player.Position.y),
-            new Vector2Int(player.Position.x, player.Position.y + 1)
-        };
-
-        foreach (var cell in surroundingCells)
-        {
-            if (cell.x < 0 || cell.x >= Constants.WORLD_SIZE.x || cell.y < 0 || cell.y >= Constants.WORLD_SIZE.y) continue;
-
             var worldCell = _world.WorldGrid[cell.x, cell.y];
             if (worldCell.TileType == TileType.Corridor)
             {
                 _world.WorldGrid[cell.x, cell.y].Revealed = true;
+            }
+        }
+    }
+
+    private void PlayerRoomReveal()
+    {
+        // reveal rooms
+        foreach (var cell in _world.GetPlayerSurroundedTiles())
+        {
+            var worldCell = _world.WorldGrid[cell.x, cell.y];
+            if (worldCell.TileType != TileType.Door) continue;
+
+            if (_world.TryGetRoom(worldCell, out var room))
+            {
+                _world.RevealRoom(room);
             }
         }
     }
