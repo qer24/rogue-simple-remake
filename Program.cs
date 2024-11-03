@@ -1,4 +1,5 @@
-﻿using RogueProject.Utils;
+﻿using FastConsole;
+using RogueProject.Utils;
 using RogueProject.Controllers;
 using RogueProject.Models;
 using RogueProject.Views;
@@ -13,17 +14,25 @@ public static class Program
         var worldController = new WorldController(world);
         var playerController = new PlayerController(world, world.Entities[0]);
 
-        var worldRenderer = new WorldRenderer();
+        var worldRenderer = new WorldRenderer(world);
+
+        void Update(bool firstUpdate = false)
+        {
+            if (!firstUpdate)
+                playerController.Update();
+            worldController.Update();
+            worldRenderer.RenderWorld();
+            // uiRenderer.RenderUI();
+
+            FConsole.DrawBuffer();
+        }
 
         // force first update before players makes any input
-        worldController.Update();
-        worldRenderer.RenderWorld(world);
+        Update(true);
 
         while (true)
         {
-            playerController.Update();
-            worldController.Update();
-            worldRenderer.RenderWorld(world);
+            Update();
         }
     }
 }

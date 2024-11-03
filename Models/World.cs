@@ -78,4 +78,58 @@ public class World : Singleton<World>
         room = default;
         return false;
     }
+
+    /// <summary>
+    /// Cast a ray between two points
+    /// </summary>
+    /// <returns></returns>
+    public bool Linecast(Vector2Int point1, Vector2Int point2)
+    {
+        // get all cells between the two points
+        // use brasenham's line algorithm
+        // if any cell is a wall, return true
+
+        var x0 = point1.x;
+        var y0 = point1.y;
+
+        var x1 = point2.x;
+        var y1 = point2.y;
+
+        var dx = Math.Abs(x1 - x0);
+        var dy = Math.Abs(y1 - y0);
+
+        var sx = x0 < x1 ? 1 : -1;
+        var sy = y0 < y1 ? 1 : -1;
+
+        var err = dx - dy;
+
+        while (true)
+        {
+            if (WorldGrid[x0, y0].TileType is TileType.WallTop or TileType.WallBottom or TileType.WallVertical)
+            {
+                return true;
+            }
+
+            if (x0 == x1 && y0 == y1)
+            {
+                break;
+            }
+
+            var e2 = 2 * err;
+
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
+
+        return false;
+    }
 }

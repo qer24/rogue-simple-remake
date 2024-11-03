@@ -54,16 +54,12 @@ public class WorldController : Controller
         }
 
         GenerateWorld();
-
-        var player = new Entity("Player", _playerStartPos);
-        _world.Entities.Add(player);
     }
 
     public override void Update()
     {
         PlayerLineOfSight();
-        PlayerCorridorReveal();
-        PlayerRoomReveal();
+        PlayerReveal();
     }
 
     private void PlayerLineOfSight()
@@ -93,18 +89,26 @@ public class WorldController : Controller
                 var cell = _world.WorldGrid[x, y];
                 if (cell.TileType != TileType.Floor) continue;
 
-                if (Vector2Int.Distance(player.Position, cell.Position) < playerVision)
-                {
-                    _visibleCells.Add(cell.Position);
-                    _world.WorldGrid[x, y].Visible = true;
-                }
+                if (!FastDistanceCheck(player.Position, cell.Position, playerVision)) continue;
+                if (_world.Linecast(player.Position, cell.Position)) continue;
+
+                _visibleCells.Add(cell.Position);
+                _world.WorldGrid[x, y].Visible = true;
             }
         }
     }
 
-    private void PlayerCorridorReveal()
+    private static bool FastDistanceCheck(Vector2Int a, Vector2Int b, int distance)
     {
-        // reveal corridors
+        var dx = a.x - b.x;
+        var dy = a.y - b.y;
+
+        return dx * dx + dy * dy < distance * distance;
+    }
+
+    private void PlayerReveal()
+    {
+        // reveal corridors and rooms
         foreach (var cell in _world.GetPlayerSurroundedTiles())
         {
             var worldCell = _world.WorldGrid[cell.x, cell.y];
@@ -112,20 +116,12 @@ public class WorldController : Controller
             {
                 _world.WorldGrid[cell.x, cell.y].Revealed = true;
             }
-        }
-    }
-
-    private void PlayerRoomReveal()
-    {
-        // reveal rooms
-        foreach (var cell in _world.GetPlayerSurroundedTiles())
-        {
-            var worldCell = _world.WorldGrid[cell.x, cell.y];
-            if (worldCell.TileType != TileType.Door) continue;
-
-            if (_world.TryGetRoom(worldCell, out var room))
+            else if (worldCell.TileType == TileType.Door)
             {
-                _world.RevealRoom(room);
+                if (_world.TryGetRoom(worldCell, out var room))
+                {
+                    _world.RevealRoom(room);
+                }
             }
         }
     }
@@ -219,10 +215,9 @@ public class WorldController : Controller
     {
         // create minimum spanning tree between rooms, using BFS and exluding gone rooms
         var mst = new List<(int i, int j)>();
-        var visited = new bool[9];
         var remainingRoomIndices = remainingRooms.Select(r => Array.IndexOf(rooms, r)).ToList();
 
-        // Helper function to calculate distance between rooms
+        // Function to calculate distance between rooms
         double GetDistance(Room r1, Room r2)
         {
             int dx = r1.Position.x - r2.Position.x;
@@ -230,50 +225,41 @@ public class WorldController : Controller
             return Math.Sqrt(dx * dx + dy * dy);
         }
 
-        while (remainingRoomIndices.Any(i => !visited[i]))
+        // Create list of all possible edges between remaining rooms
+        var edges = new List<(int from, int to, double distance)>();
+        for (int i = 0; i < remainingRoomIndices.Count; i++)
         {
-            var queue = new Queue<int>();
-
-            // Find first unvisited room from remaining rooms
-            var startRoomIndex = remainingRoomIndices.First(i => !visited[i]);
-            queue.Enqueue(startRoomIndex);
-            visited[startRoomIndex] = true;
-
-            while (queue.Count > 0)
+            for (int j = i + 1; j < remainingRoomIndices.Count; j++)
             {
-                var i = queue.Dequeue();
+                int roomI = remainingRoomIndices[i];
+                int roomJ = remainingRoomIndices[j];
 
-                // Check neighbours
-                for (int j = 0; j < 9; j++)
-                {
-                    if (i == j || visited[j] || rooms[i].Gone || rooms[j].Gone) continue;
+                // Skip if rooms are gone
+                if (rooms[roomI].Gone || rooms[roomJ].Gone) continue;
 
-                    if (_neighbourMatrix[i, j])
-                    {
-                        // Visit neighbour
-                        mst.Add((i, j));
-                        queue.Enqueue(j);
-                        visited[j] = true;
-                    }
-                }
+                // Calculate distance
+                double distance = GetDistance(rooms[roomI], rooms[roomJ]);
+                edges.Add((roomI, roomJ, distance));
             }
+        }
 
-            // If there are still unvisited rooms, connect the components
-            var unvisitedRemaining = remainingRoomIndices.Where(i => !visited[i]).ToList();
-            if (unvisitedRemaining.Any())
-            {
-                // Find closest visited room to connect with
-                var visitedRooms = remainingRoomIndices.Where(i => visited[i]).ToList();
-                var nextRoom = unvisitedRemaining[0];
+        // Sort edges by distance
+        edges = edges.OrderBy(e => e.distance).ToList();
 
-                // Connect to the closest visited room
-                var closestVisited = visitedRooms.MinBy(i => GetDistance(rooms[i], rooms[nextRoom]));
+        // Initialize DisjointSet
+        var disjointSet = new DisjointSet(9);
 
-                // Add connection between components
-                mst.Add((closestVisited, nextRoom));
-                // Mark the next starting room as visited
-                visited[nextRoom] = true;
-            }
+        // Kruskal's algorithm
+        foreach (var edge in edges)
+        {
+            // Skip if rooms are already connected
+            if (disjointSet.Find(edge.from) == disjointSet.Find(edge.to)) continue;
+
+            mst.Add((edge.from, edge.to));
+            disjointSet.Union(edge.from, edge.to);
+
+            _neighbourMatrix[edge.from, edge.to] = true;
+            _neighbourMatrix[edge.to, edge.from] = true;
         }
 
         bool CanConnect((int i, int j) connection)
@@ -380,5 +366,8 @@ public class WorldController : Controller
         _playerStartPos = playerRoom.Position + playerRoom.Size / 2;
 
         _world.RevealRoom(playerRoom);
+
+        var player = new Entity("Player", _playerStartPos);
+        _world.Entities.Add(player);
     }
 }

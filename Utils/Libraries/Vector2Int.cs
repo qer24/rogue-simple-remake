@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace RogueProject.Utils;
 
-// Klasa z silnika Unity
+// Unity engine class
 public struct Vector2Int
 {
     private int _x, _y;

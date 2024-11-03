@@ -11,5 +11,5 @@ public static class Constants
     public const int RANDOM_CONNECTION_COUNT = 3;
 
     // World visibility
-    public const int FLOOR_REVEAL_DISTANCE = 5;
+    public const int FLOOR_REVEAL_DISTANCE = 6;
 }

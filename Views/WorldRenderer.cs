@@ -6,18 +6,22 @@ namespace RogueProject.Views;
 
 public class WorldRenderer
 {
+    private World _world;
+
     private const ConsoleColor FOREGROUND_COLOR = ConsoleColor.White;
     private const ConsoleColor BACKGROUND_COLOR = ConsoleColor.Black;
 
-    public WorldRenderer()
+    public WorldRenderer(World world)
     {
+        _world = world;
+
         Console.WindowHeight = Constants.WORLD_SIZE.y + 1;
         Console.WindowWidth = Constants.WORLD_SIZE.x + 1;
 
         FConsole.Initialize("Rogue Project", FOREGROUND_COLOR, BACKGROUND_COLOR);
     }
 
-    public void RenderWorld(World world)
+    public void RenderWorld()
     {
         var sizeX = Constants.WORLD_SIZE.x;
         var sizeY = Constants.WORLD_SIZE.y;
@@ -26,7 +30,7 @@ public class WorldRenderer
         {
             for (int x = 0; x < sizeX; x++)
             {
-                var entity = world.Entities.FirstOrDefault(e => e.Position.x == x && e.Position.y == y);
+                var entity = _world.Entities.FirstOrDefault(e => e.Position.x == x && e.Position.y == y);
 
                 if (entity != null)
                 {
@@ -34,7 +38,7 @@ public class WorldRenderer
                 }
                 else
                 {
-                    var cell = world.GetCell(new Vector2Int(x, y));
+                    var cell = _world.GetCell(new Vector2Int(x, y));
 
                     if (!cell.DoRender())
                     {
@@ -48,8 +52,6 @@ public class WorldRenderer
                 }
             }
         }
-
-        FConsole.DrawBuffer();
     }
 
     private static char GetTileChar(TileType tileType)
@@ -61,7 +63,7 @@ public class WorldRenderer
             TileType.WallBottom => '-',
             TileType.WallVertical => '|',
             TileType.Door => '+',
-            TileType.Corridor => '#',
+            TileType.Corridor => 'o',
             TileType.Empty => ' ',
             _ => '?'
         };
