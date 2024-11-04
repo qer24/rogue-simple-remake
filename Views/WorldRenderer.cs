@@ -4,24 +4,21 @@ using RogueProject.Utils;
 
 namespace RogueProject.Views;
 
-public class WorldRenderer
+public class WorldRenderer : Renderer
 {
-    private World _world;
-
-    private const ConsoleColor FOREGROUND_COLOR = ConsoleColor.White;
-    private const ConsoleColor BACKGROUND_COLOR = ConsoleColor.Black;
+    private readonly World _world;
 
     public WorldRenderer(World world)
     {
         _world = world;
 
-        Console.WindowHeight = Constants.WORLD_SIZE.y + 1;
+        Console.WindowHeight = Constants.WORLD_SIZE.y + 2;
         Console.WindowWidth = Constants.WORLD_SIZE.x + 1;
 
-        FConsole.Initialize("Rogue Project", FOREGROUND_COLOR, BACKGROUND_COLOR);
+        FConsole.Initialize("Rogue Project", Constants.FOREGROUND_COLOR, Constants.BACKGROUND_COLOR);
     }
 
-    public void RenderWorld()
+    public override void Render()
     {
         var sizeX = Constants.WORLD_SIZE.x;
         var sizeY = Constants.WORLD_SIZE.y;
@@ -34,7 +31,7 @@ public class WorldRenderer
 
                 if (entity != null)
                 {
-                    FConsole.SetChar(x, y, '@', ConsoleColor.Yellow, BACKGROUND_COLOR);
+                    FConsole.SetChar(x, y, '@', ConsoleColor.Yellow, Constants.BACKGROUND_COLOR);
                 }
                 else
                 {
@@ -42,13 +39,13 @@ public class WorldRenderer
 
                     if (!cell.DoRender())
                     {
-                        FConsole.SetChar(x, y, ' ', FOREGROUND_COLOR, BACKGROUND_COLOR);
+                        FConsole.SetChar(x, y, ' ', Constants.FOREGROUND_COLOR, Constants.BACKGROUND_COLOR);
                         continue;
                     }
 
                     var tileType = cell.TileType;
                     var tileChar = GetTileChar(tileType);
-                    FConsole.SetChar(x, y, tileChar, FOREGROUND_COLOR, BACKGROUND_COLOR);
+                    FConsole.SetChar(x, y, tileChar, Constants.FOREGROUND_COLOR, Constants.BACKGROUND_COLOR);
                 }
             }
         }

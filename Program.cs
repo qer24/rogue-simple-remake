@@ -2,6 +2,7 @@
 using RogueProject.Utils;
 using RogueProject.Controllers;
 using RogueProject.Models;
+using RogueProject.Models.Entities;
 using RogueProject.Views;
 
 namespace RogueProject;
@@ -12,17 +13,19 @@ public static class Program
     {
         var world = World.Instance;
         var worldController = new WorldController(world);
+        var worldRenderer = new WorldRenderer(world);
+
         var playerController = new PlayerController(world, world.Entities[0]);
 
-        var worldRenderer = new WorldRenderer(world);
+        var uiRenderer = new UiRenderer(world.Entities[0] as Player);
 
         void Update(bool firstUpdate = false)
         {
             if (!firstUpdate)
                 playerController.Update();
             worldController.Update();
-            worldRenderer.RenderWorld();
-            // uiRenderer.RenderUI();
+            worldRenderer.Render();
+            uiRenderer.Render();
 
             FConsole.DrawBuffer();
         }

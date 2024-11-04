@@ -1,4 +1,5 @@
 ﻿using RogueProject.Models;
+using RogueProject.Models.Entities;
 using RogueProject.Utils;
 
 namespace RogueProject.Controllers;
@@ -367,7 +368,7 @@ public class WorldController : Controller
 
         _world.RevealRoom(playerRoom);
 
-        var player = new Entity("Player", _playerStartPos);
+        var player = new Player("Player", _playerStartPos);
         _world.Entities.Add(player);
     }
 }
