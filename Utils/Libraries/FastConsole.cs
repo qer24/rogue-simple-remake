@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
+using ProjektFB.Utils.Libraries;
 
 namespace FastConsole;
 
@@ -43,6 +44,7 @@ public static class FConsole {
         Console.OutputEncoding = System.Text.Encoding.Unicode;
         Console.Title = title;
         //Maximize();
+        WindowUtility.MoveWindowToCenter();
         Console.CursorVisible = false;
 
         GetOutputHandle();
