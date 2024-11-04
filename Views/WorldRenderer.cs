@@ -31,7 +31,9 @@ public class WorldRenderer : Renderer
 
                 if (entity != null)
                 {
-                    FConsole.SetChar(x, y, '@', ConsoleColor.Yellow, Constants.BACKGROUND_COLOR);
+                    var character = entity.Character;
+                    var color = entity.Color;
+                    FConsole.SetChar(x, y, character, color, Constants.BACKGROUND_COLOR);
                 }
                 else
                 {

@@ -109,15 +109,15 @@ public class WorldController : Controller
 
     private void PlayerReveal()
     {
-        // reveal corridors and rooms
+        // reveal surrounding tiles
         foreach (var cell in _world.GetPlayerSurroundedTiles())
         {
             var worldCell = _world.WorldGrid[cell.x, cell.y];
-            if (worldCell.TileType == TileType.Corridor)
+            if (worldCell.TileType == TileType.Corridor) // reveal corridors
             {
                 _world.WorldGrid[cell.x, cell.y].Revealed = true;
             }
-            else if (worldCell.TileType == TileType.Door)
+            else if (worldCell.TileType == TileType.Door) // reveal rooms
             {
                 if (_world.TryGetRoom(worldCell, out var room))
                 {
