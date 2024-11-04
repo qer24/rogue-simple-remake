@@ -1,9 +1,10 @@
 ﻿using RogueProject.Models;
+using RogueProject.Models.Entities;
 using RogueProject.Utils;
 
 namespace RogueProject.Controllers;
 
-public class PlayerController(World world, Entity player) : Controller
+public class PlayerController(World world, Player player) : Controller
 {
     private Vector2Int _movementDirection;
 
@@ -29,6 +30,10 @@ public class PlayerController(World world, Entity player) : Controller
                 }
                 return;
             }
+            case ConsoleKey.G:
+                var worldController = WorldController.Instance;
+                worldController.GenerateWorld(true);
+                return;
             default:
                 _movementDirection = key switch
                 {

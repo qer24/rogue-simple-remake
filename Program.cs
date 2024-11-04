@@ -15,9 +15,9 @@ public static class Program
         var worldController = new WorldController(world);
         var worldRenderer = new WorldRenderer(world);
 
-        var playerController = new PlayerController(world, world.Entities[0]);
-
-        var uiRenderer = new UiRenderer(world.Entities[0] as Player);
+        var player = world.Entities[0] as Player;
+        var playerController = new PlayerController(world, player);
+        var uiRenderer = new UiRenderer(player);
 
         void Update(bool firstUpdate = false)
         {

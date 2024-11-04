@@ -7,9 +7,13 @@ namespace RogueProject.Controllers;
 public class WorldController : Controller
 {
     private readonly World _world;
+    private Player _player;
     private Vector2Int _playerStartPos;
 
     private readonly HashSet<Vector2Int> _visibleCells = [];
+
+    // can't use Singleton.cs because this class already inherits from Controller
+    public static WorldController Instance { get; private set; }
 
     // rooms i, j are neighbours if _neighbourMatrix[i, j] is true
     private readonly bool[,] _neighbourMatrix = new bool[9, 9]
@@ -27,6 +31,7 @@ public class WorldController : Controller
 
     public WorldController(World world)
     {
+        Instance = this; // set singleton instance
         _world = world;
 
         Init();
@@ -34,33 +39,14 @@ public class WorldController : Controller
 
     private void Init()
     {
-        var sizeX = Constants.WORLD_SIZE.x;
-        var sizeY = Constants.WORLD_SIZE.y;
-
-        _world.WorldGrid = new WorldCell[sizeX, sizeY];
-        _world.Entities = [];
-
-        for (int x = 0; x < sizeX; x++)
-        {
-            for (int y = 0; y < sizeY; y++)
-            {
-                _world.WorldGrid[x, y] = new WorldCell
-                {
-                    Position = new Vector2Int(x, y),
-                    TileType = TileType.Empty,
-                    Visible = false,
-                    Revealed = false
-                };
-            }
-        }
-
-        GenerateWorld();
+        GenerateWorld(false);
     }
 
     public override void Update()
     {
         PlayerLineOfSight();
         PlayerReveal();
+        PlayerStairs();
     }
 
     private void PlayerLineOfSight()
@@ -127,11 +113,42 @@ public class WorldController : Controller
         }
     }
 
+    private void PlayerStairs()
+    {
+        var player = _world.Entities[0];
+        var playerCell = _world.WorldGrid[player.Position.x, player.Position.y];
+
+        if (playerCell.TileType != TileType.Stairs) return;
+
+        GenerateWorld(true);
+        Update();
+    }
+
     /// <summary>
     /// Procedural generation of the world
     /// </summary>
-    private void GenerateWorld()
+    public void GenerateWorld(bool regenerate)
     {
+        var sizeX = Constants.WORLD_SIZE.x;
+        var sizeY = Constants.WORLD_SIZE.y;
+
+        _world.WorldGrid = new WorldCell[sizeX, sizeY];
+        _world.Entities = [];
+
+        for (int x = 0; x < sizeX; x++)
+        {
+            for (int y = 0; y < sizeY; y++)
+            {
+                _world.WorldGrid[x, y] = new WorldCell
+                {
+                    Position = new Vector2Int(x, y),
+                    TileType = TileType.Empty,
+                    Visible = false,
+                    Revealed = false
+                };
+            }
+        }
+
         var rooms = new Room[9];
 
         Vector2Int IndexToPosition(int i)
@@ -180,7 +197,8 @@ public class WorldController : Controller
         var mst = GenerateSpanningTree(rooms, remainingRooms, rng);
         ConnectRooms(mst, rooms);
 
-        SpawnPlayer(rng, remainingRooms);
+        SpawnPlayer(rng, remainingRooms, out var playerStartRoom, regenerate);
+        PlaceStairs(rng, rooms, remainingRooms, playerStartRoom);
     }
 
     private void SetRooms(Room[] rooms)
@@ -359,16 +377,53 @@ public class WorldController : Controller
         }
     }
 
-    private void SpawnPlayer(Random rng, Room[] remainingRooms)
+    private void SpawnPlayer(Random rng, Room[] remainingRooms, out Room playerRoom, bool regenerate)
     {
         // set player pos to middle of random room
         var randomRoomIndex = rng.Next(0, remainingRooms.Length);
-        var playerRoom = remainingRooms[randomRoomIndex];
+        playerRoom = remainingRooms[randomRoomIndex];
         _playerStartPos = playerRoom.Position + playerRoom.Size / 2;
 
         _world.RevealRoom(playerRoom);
 
-        var player = new Player("Player", _playerStartPos);
-        _world.Entities.Add(player);
+        if (regenerate)
+        {
+            _player.Position = _playerStartPos;
+        }
+        else
+        {
+            _player = new Player(nameof(Player), _playerStartPos);
+        }
+        _world.Entities.Add(_player);
+    }
+
+    private void PlaceStairs(Random rng, Room[] allRooms, Room[] remainingRooms, Room playerRoom)
+    {
+        // remove player spawn room
+        var validRooms = remainingRooms.Where(r => r != playerRoom).ToArray();
+
+        // remove neighbours of player room
+        var playerRoomIndex = Array.IndexOf(allRooms, playerRoom);
+        for (int i = 0; i < _neighbourMatrix.GetLength(0); i++)
+        {
+            if (validRooms.Length == 1) // to prevent removing all rooms
+            {
+                break;
+            }
+
+            if (_neighbourMatrix[playerRoomIndex, i])
+            {
+                validRooms = validRooms.Where(r => r != allRooms[i]).ToArray();
+            }
+        }
+
+        // place stairs in random room
+        var randomRoomIndex = rng.Range(0, validRooms.Length);
+        var stairsRoom = validRooms.ElementAt(randomRoomIndex);
+
+        // random pos in room
+        var pos = stairsRoom.RandomPosition();
+
+        _world.WorldGrid[pos.x, pos.y].TileType = TileType.Stairs;
     }
 }

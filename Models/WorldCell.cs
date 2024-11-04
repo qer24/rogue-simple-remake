@@ -27,5 +27,6 @@ public enum TileType
     WallVertical,
     Door,
     Corridor,
-    Floor
+    Floor,
+    Stairs
 }

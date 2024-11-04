@@ -64,6 +64,7 @@ public class WorldRenderer : Renderer
             TileType.Door => '+',
             TileType.Corridor => 'o',
             TileType.Empty => ' ',
+            TileType.Stairs => '%',
             _ => '?'
         };
     }
