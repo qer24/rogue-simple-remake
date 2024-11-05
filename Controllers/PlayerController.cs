@@ -56,8 +56,12 @@ public class PlayerController(World world, Player player) : Controller
     public override void Update()
     {
         GetInput();
+        Move(_movementDirection);
+    }
 
-        var newPosition = player.Position + _movementDirection;
+    public void Move(Vector2Int direction)
+    {
+        var newPosition = player.Position + direction;
 
         if (!world.CollisionCheck(newPosition))
         {

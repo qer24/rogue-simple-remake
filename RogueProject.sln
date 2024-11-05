@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RogueProject", "RogueProject.csproj", "{647CFB27-4CD7-4CE1-992D-93160030DC7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RogueTests", "RogueTests\RogueTests.csproj", "{80583F29-66E9-4C4C-8272-3C439AC7EF8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{647CFB27-4CD7-4CE1-992D-93160030DC7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{647CFB27-4CD7-4CE1-992D-93160030DC7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{647CFB27-4CD7-4CE1-992D-93160030DC7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80583F29-66E9-4C4C-8272-3C439AC7EF8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80583F29-66E9-4C4C-8272-3C439AC7EF8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80583F29-66E9-4C4C-8272-3C439AC7EF8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80583F29-66E9-4C4C-8272-3C439AC7EF8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

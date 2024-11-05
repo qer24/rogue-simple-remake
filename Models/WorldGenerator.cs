@@ -9,7 +9,7 @@ public class WorldGenerator(World world)
     private Vector2Int _playerStartPos;
 
     // rooms i, j are neighbours if _neighbourMatrix[i, j] is true
-    private readonly bool[,] _neighbourMatrix = new bool[9, 9]
+    public readonly bool[,] NeighbourMatrix = new bool[9, 9]
     {
         { false, true,  false, true,  false, false, false, false, false },
         { true,  false, true,  false, true,  false, false, false, false },
@@ -26,6 +26,26 @@ public class WorldGenerator(World world)
     /// Procedural generation of the world
     /// </summary>
     public void GenerateWorld(bool regenerate)
+    {
+        InitWorld();
+
+        var rooms = new Room[9];
+        var rng = new Random();
+
+        PlaceRooms(rng, ref rooms, out var remainingRooms);
+
+        // set wall and floor tiles
+        SetRoomTiles(remainingRooms);
+        world.Rooms = remainingRooms;
+
+        var mst = GenerateSpanningTree(rooms, remainingRooms, rng);
+        ConnectRooms(mst, rooms);
+
+        SpawnPlayer(rng, remainingRooms, out var playerStartRoom, regenerate);
+        PlaceStairs(rng, rooms, remainingRooms, playerStartRoom);
+    }
+
+    private void InitWorld()
     {
         var sizeX = Constants.WORLD_SIZE.x;
         var sizeY = Constants.WORLD_SIZE.y;
@@ -47,9 +67,10 @@ public class WorldGenerator(World world)
                 };
             }
         }
+    }
 
-        var rooms = new Room[9];
-
+    private void PlaceRooms(Random rng, ref Room[] rooms, out Room[] remainingRooms)
+    {
         Vector2Int IndexToPosition(int i)
         {
             var x = i % 3 * 26 + 1;
@@ -59,7 +80,6 @@ public class WorldGenerator(World world)
         }
 
         // generate rooms
-        var rng = new Random();
         var goneCount = 0;
         var maxGoneRooms = rng.Next(1, Constants.MAX_GONE_ROOMS + 1);
         for (int i = 0; i < rooms.Length; i++)
@@ -87,23 +107,13 @@ public class WorldGenerator(World world)
         }
 
         // remove gone rooms
-        var remainingRooms = rooms.Where(r => !r.Gone).ToArray();
-
-        // set wall and floor tiles
-        SetRooms(remainingRooms);
-        world.Rooms = remainingRooms;
-
-        var mst = GenerateSpanningTree(rooms, remainingRooms, rng);
-        ConnectRooms(mst, rooms);
-
-        SpawnPlayer(rng, remainingRooms, out var playerStartRoom, regenerate);
-        PlaceStairs(rng, rooms, remainingRooms, playerStartRoom);
+        remainingRooms = rooms.Where(r => !r.Gone).ToArray();
     }
 
     /// <summary>
     /// Set all tiles in rooms to walls or floors
     /// </summary>
-    private void SetRooms(Room[] rooms)
+    private void SetRoomTiles(Room[] rooms)
     {
         foreach (var room in rooms)
         {
@@ -174,8 +184,8 @@ public class WorldGenerator(World world)
             mst.Add((edge.from, edge.to));
             disjointSet.Union(edge.from, edge.to);
 
-            _neighbourMatrix[edge.from, edge.to] = true;
-            _neighbourMatrix[edge.to, edge.from] = true;
+            NeighbourMatrix[edge.from, edge.to] = true;
+            NeighbourMatrix[edge.to, edge.from] = true;
         }
 
         bool CanConnect((int i, int j) connection)
@@ -310,14 +320,14 @@ public class WorldGenerator(World world)
 
         // remove neighbours of player room
         var playerRoomIndex = Array.IndexOf(allRooms, playerRoom);
-        for (int i = 0; i < _neighbourMatrix.GetLength(0); i++)
+        for (int i = 0; i < NeighbourMatrix.GetLength(0); i++)
         {
             if (validRooms.Length == 1) // to prevent removing all rooms
             {
                 break;
             }
 
-            if (_neighbourMatrix[playerRoomIndex, i])
+            if (NeighbourMatrix[playerRoomIndex, i])
             {
                 validRooms = validRooms.Where(r => r != allRooms[i]).ToArray();
             }

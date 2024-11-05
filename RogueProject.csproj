@@ -13,5 +13,14 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="RogueTests\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="RogueTests\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="RogueTests\**" />
+  </ItemGroup>
 
 </Project>
