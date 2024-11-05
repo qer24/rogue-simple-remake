@@ -11,7 +11,7 @@ public static class Program
 {
     public static void Main()
     {
-        var world = World.Instance;
+        var world = new World();
         var worldController = new WorldController(world);
         var worldRenderer = new WorldRenderer(world);
 

@@ -31,8 +31,7 @@ public class PlayerController(World world, Player player) : Controller
                 return;
             }
             case ConsoleKey.G:
-                var worldController = WorldController.Instance;
-                worldController.GenerateWorld(true);
+                world.GenerateWorld(true);
                 return;
             default:
                 _movementDirection = key switch

@@ -5,7 +5,7 @@ namespace RogueProject.Models;
 
 public abstract class Entity
 {
-    protected readonly string Name;
+    public readonly string Name;
     public Vector2Int Position;
 
     public int Health = -1;

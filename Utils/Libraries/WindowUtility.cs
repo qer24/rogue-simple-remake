@@ -1,4 +1,6 @@
-﻿namespace ProjektFB.Utils.Libraries;
+﻿using RogueProject.Utils;
+
+namespace ProjektFB.Utils.Libraries;
 
 using System;
 using System.Diagnostics;
@@ -55,7 +57,10 @@ public static class WindowUtility
         IntPtr window = Process.GetCurrentProcess().MainWindowHandle;
 
         if (window == IntPtr.Zero)
-            throw new Exception("Couldn't find a window to center!");
+        {
+            Logger.Log("Couldn't find a window to center!");
+            return;
+        }
 
         var screenSize = GetScreenSize();
         var windowSize = GetWindowSize(window);

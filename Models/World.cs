@@ -10,9 +10,20 @@ public class World
     public WorldCell[,] WorldGrid;
     public List<Entity> Entities;
 
+    public void GenerateWorld(bool regenerate)
+    {
+        var worldGenerator = new WorldGenerator(this);
+        worldGenerator.GenerateWorld(regenerate);
+    }
+
     public WorldCell GetCell(Vector2Int position)
     {
         return WorldGrid[position.x, position.y];
+    }
+
+    public WorldCell GetPlayercell()
+    {
+        return WorldGrid[Entities[0].Position.x, Entities[0].Position.y];
     }
 
     public void RevealRoom(Room room)
@@ -137,12 +148,12 @@ public class World
     {
         var x = pos.x;
         var y = pos.y;
-        
+
         var tileType = WorldGrid[x, y].TileType;
 
-        return tileType is TileType.WallTop 
-            or TileType.WallBottom 
-            or TileType.WallVertical 
+        return tileType is TileType.WallTop
+            or TileType.WallBottom
+            or TileType.WallVertical
             or TileType.Empty;
     }
 }
