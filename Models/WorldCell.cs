@@ -10,6 +10,9 @@ public struct WorldCell
     public bool Visible;
     public bool Revealed;
 
+    /// <summary>
+    /// The cell is rendered if it is revealed or visible if it's a floor.
+    /// </summary>
     public bool DoRender()
     {
         // For floor to be visible, it must be revealed aswell as visible

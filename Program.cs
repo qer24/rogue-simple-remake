@@ -1,5 +1,4 @@
 ﻿using FastConsole;
-using RogueProject.Utils;
 using RogueProject.Controllers;
 using RogueProject.Models;
 using RogueProject.Models.Entities;
@@ -11,6 +10,11 @@ public static class Program
 {
     public static void Main()
     {
+        Console.WindowHeight = Constants.WORLD_SIZE.y + 2;
+        Console.WindowWidth = Constants.WORLD_SIZE.x + 1;
+
+        FConsole.Initialize("Rogue Project", Constants.FOREGROUND_COLOR, Constants.BACKGROUND_COLOR);
+
         var world = new World();
         var worldController = new WorldController(world);
         var worldRenderer = new WorldRenderer(world);

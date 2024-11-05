@@ -10,22 +10,35 @@ public class World
     public WorldCell[,] WorldGrid;
     public List<Entity> Entities;
 
+    /// <summary>
+    /// Procedurally generates the world, if regenerate is true, the player reference is kept.
+    /// </summary>
     public void GenerateWorld(bool regenerate)
     {
         var worldGenerator = new WorldGenerator(this);
         worldGenerator.GenerateWorld(regenerate);
     }
 
+    /// <summary>
+    /// Get cell based on position.
+    /// </summary>
+    /// <param name="position"></param>
     public WorldCell GetCell(Vector2Int position)
     {
         return WorldGrid[position.x, position.y];
     }
 
+    /// <summary>
+    /// Get the cell player is currently on.
+    /// </summary>
     public WorldCell GetPlayercell()
     {
         return WorldGrid[Entities[0].Position.x, Entities[0].Position.y];
     }
 
+    /// <summary>
+    /// Sets each cell in the room as revealed.
+    /// </summary>
     public void RevealRoom(Room room)
     {
         var x = room.Position.x;
@@ -42,6 +55,9 @@ public class World
         }
     }
 
+    /// <summary>
+    /// Get the tiles in 4 cardinal directions around the player.
+    /// </summary>
     public Vector2Int[] GetPlayerSurroundedTiles()
     {
         var player = Entities[0];
@@ -61,7 +77,8 @@ public class World
     }
 
     /// <summary>
-    /// Pretty expensive, only call when player is near a door
+    /// Gets the room that contains the given cell.
+    /// Pretty expensive, only call when player is near a door.
     /// </summary>
     public bool TryGetRoom(WorldCell cell, out Room room)
     {
@@ -91,7 +108,8 @@ public class World
     }
 
     /// <summary>
-    /// Cast a ray between two points
+    /// Cast a line between two points,
+    /// returns true if any wall is hit between them.
     /// </summary>
     /// <returns></returns>
     public bool Linecast(Vector2Int point1, Vector2Int point2)
@@ -144,7 +162,10 @@ public class World
         return false;
     }
 
-    public bool WallCheck(Vector2Int pos)
+    /// <summary>
+    /// Returns true if the given position is a wall or empty.
+    /// </summary>
+    public bool CollisionCheck(Vector2Int pos)
     {
         var x = pos.x;
         var y = pos.y;

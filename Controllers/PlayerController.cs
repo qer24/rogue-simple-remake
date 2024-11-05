@@ -8,6 +8,12 @@ public class PlayerController(World world, Player player) : Controller
 {
     private Vector2Int _movementDirection;
 
+    /// <summary>
+    /// Escape - Exit the game.
+    /// R - Reveal the map.
+    /// G - Generate a new world.
+    /// Arrow keys - Move the player.
+    /// </summary>
     private void GetInput()
     {
         _movementDirection = new Vector2Int(0, 0);
@@ -53,7 +59,7 @@ public class PlayerController(World world, Player player) : Controller
 
         var newPosition = player.Position + _movementDirection;
 
-        if (!world.WallCheck(newPosition))
+        if (!world.CollisionCheck(newPosition))
         {
             player.Position = newPosition;
         }

@@ -12,12 +12,6 @@ public class WorldController : Controller
     public WorldController(World world)
     {
         _world = world;
-
-        Init();
-    }
-
-    private void Init()
-    {
         _world.GenerateWorld(false);
     }
 
@@ -28,6 +22,9 @@ public class WorldController : Controller
         PlayerStairs();
     }
 
+    /// <summary>
+    /// Hides or reveals floor tiles based on player's line of sight.
+    /// </summary>
     private void PlayerLineOfSight()
     {
         var player = _world.Entities[0];
@@ -64,6 +61,9 @@ public class WorldController : Controller
         }
     }
 
+    /// <summary>
+    /// Avoids a sqrt operation for distance check.
+    /// </summary>
     private static bool FastDistanceCheck(Vector2Int a, Vector2Int b, int distance)
     {
         var dx = a.x - b.x;
@@ -72,6 +72,9 @@ public class WorldController : Controller
         return dx * dx + dy * dy < distance * distance;
     }
 
+    /// <summary>
+    /// Reveal surrounding tiles or rooms based on player's position.
+    /// </summary>
     private void PlayerReveal()
     {
         // reveal surrounding tiles
@@ -92,6 +95,9 @@ public class WorldController : Controller
         }
     }
 
+    /// <summary>
+    /// Check if player is on stairs and generate a new world if that's the case.
+    /// </summary>
     private void PlayerStairs()
     {
         var playerCell = _world.GetPlayercell();

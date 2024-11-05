@@ -100,6 +100,9 @@ public class WorldGenerator(World world)
         PlaceStairs(rng, rooms, remainingRooms, playerStartRoom);
     }
 
+    /// <summary>
+    /// Set all tiles in rooms to walls or floors
+    /// </summary>
     private void SetRooms(Room[] rooms)
     {
         foreach (var room in rooms)
@@ -109,26 +112,21 @@ public class WorldGenerator(World world)
                 for (int y = room.Position.y; y < room.Position.y + room.Size.y; y++)
                 {
                     if (y == room.Position.y)
-                    {
                         world.WorldGrid[x, y].TileType = TileType.WallTop;
-                    }
                     else if (y == room.Position.y + room.Size.y - 1)
-                    {
                         world.WorldGrid[x, y].TileType = TileType.WallBottom;
-                    }
                     else if (x == room.Position.x || x == room.Position.x + room.Size.x - 1)
-                    {
                         world.WorldGrid[x, y].TileType = TileType.WallVertical;
-                    }
                     else
-                    {
                         world.WorldGrid[x, y].TileType = TileType.Floor;
-                    }
                 }
             }
         }
     }
 
+    /// <summary>
+    /// Returns a minimum spanning tree between rooms, as well as additional random connections.
+    /// </summary>
     private List<(int i, int j)> GenerateSpanningTree(Room[] rooms, Room[] remainingRooms, Random rng)
     {
         // create minimum spanning tree between rooms, using BFS and exluding gone rooms
@@ -215,6 +213,9 @@ public class WorldGenerator(World world)
         return mst;
     }
 
+    /// <summary>
+    /// Connects a given spanning tree of rooms with corridors using A* pathfinding.
+    /// </summary>
     private void ConnectRooms(List<(int i, int j)> mst, Room[] rooms)
     {
         var sizeX = Constants.WORLD_SIZE.x;
@@ -276,6 +277,9 @@ public class WorldGenerator(World world)
         }
     }
 
+    /// <summary>
+    /// Creates and/or moves the player entity to a random room.
+    /// </summary>
     private void SpawnPlayer(Random rng, Room[] remainingRooms, out Room playerRoom, bool regenerate)
     {
         // set player pos to middle of random room
@@ -296,6 +300,9 @@ public class WorldGenerator(World world)
         world.Entities.Add(_player);
     }
 
+    /// <summary>
+    /// Creates a stairs tile in a random room.
+    /// </summary>
     private void PlaceStairs(Random rng, Room[] allRooms, Room[] remainingRooms, Room playerRoom)
     {
         // remove player spawn room

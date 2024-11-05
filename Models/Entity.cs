@@ -25,6 +25,9 @@ public abstract class Entity
         LoadStats();
     }
 
+    /// <summary>
+    /// Load stats from json file associated with entity.
+    /// </summary>
     private void LoadStats()
     {
         var jsonString = File.ReadAllText($"Data/Entities/{Name}.json");

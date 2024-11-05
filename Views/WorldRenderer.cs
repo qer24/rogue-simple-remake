@@ -4,20 +4,11 @@ using RogueProject.Utils;
 
 namespace RogueProject.Views;
 
-public class WorldRenderer : Renderer
+public class WorldRenderer(World world) : Renderer
 {
-    private readonly World _world;
-
-    public WorldRenderer(World world)
-    {
-        _world = world;
-
-        Console.WindowHeight = Constants.WORLD_SIZE.y + 2;
-        Console.WindowWidth = Constants.WORLD_SIZE.x + 1;
-
-        FConsole.Initialize("Rogue Project", Constants.FOREGROUND_COLOR, Constants.BACKGROUND_COLOR);
-    }
-
+    /// <summary>
+    /// Generate a grid of characters based of the world and render it to the screen.
+    /// </summary>
     public override void Render()
     {
         var sizeX = Constants.WORLD_SIZE.x;
@@ -27,7 +18,7 @@ public class WorldRenderer : Renderer
         {
             for (int x = 0; x < sizeX; x++)
             {
-                var entity = _world.Entities.FirstOrDefault(e => e.Position.x == x && e.Position.y == y);
+                var entity = world.Entities.FirstOrDefault(e => e.Position.x == x && e.Position.y == y);
 
                 if (entity != null)
                 {
@@ -37,7 +28,7 @@ public class WorldRenderer : Renderer
                 }
                 else
                 {
-                    var cell = _world.GetCell(new Vector2Int(x, y));
+                    var cell = world.GetCell(new Vector2Int(x, y));
 
                     if (!cell.DoRender())
                     {

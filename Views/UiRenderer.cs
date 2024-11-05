@@ -8,6 +8,9 @@ public class UiRenderer(Player player) : Renderer
 {
     private const string TAB = "       ";
 
+    /// <summary>
+    /// Generate the UI string and render it to the screen.
+    /// </summary>
     public override void Render()
     {
         var y = Constants.WORLD_SIZE.y;
