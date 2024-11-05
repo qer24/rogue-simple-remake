@@ -54,10 +54,7 @@ public class PlayerController(World world, Player player) : Controller
 
         var newPosition = player.Position + _movementDirection;
 
-        var newCell = world.GetCell(newPosition);
-        var tileType = newCell.TileType;
-
-        if (tileType != TileType.WallTop && tileType != TileType.WallBottom && tileType != TileType.WallVertical && tileType != TileType.Empty)
+        if (!world.WallCheck(newPosition))
         {
             player.Position = newPosition;
         }

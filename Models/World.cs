@@ -4,7 +4,7 @@ using RogueProject.Utils;
 
 namespace RogueProject.Models;
 
-public class World : Singleton<World>
+public class World
 {
     public Room[] Rooms;
     public WorldCell[,] WorldGrid;
@@ -131,5 +131,18 @@ public class World : Singleton<World>
         }
 
         return false;
+    }
+
+    public bool WallCheck(Vector2Int pos)
+    {
+        var x = pos.x;
+        var y = pos.y;
+        
+        var tileType = WorldGrid[x, y].TileType;
+
+        return tileType is TileType.WallTop 
+            or TileType.WallBottom 
+            or TileType.WallVertical 
+            or TileType.Empty;
     }
 }
