@@ -45,7 +45,7 @@ public class UiRenderer(Player player) : Renderer
 
         if (uiMessage.RemainingDuration <= 0)
         {
-            uiMessage.Message = "                                                  ";
+            uiMessage.Reset();
         }
         else
         {

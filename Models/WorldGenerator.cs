@@ -45,6 +45,7 @@ public class WorldGenerator(World world)
         PlaceStairs(rng, rooms, remainingRooms, playerStartRoom);
 
         SpawnItems(rng, remainingRooms);
+        SpawnEnemies(rng, remainingRooms);
     }
 
     private void InitWorld()
@@ -355,27 +356,13 @@ public class WorldGenerator(World world)
 
         foreach (var room in remainingRooms)
         {
-            var itemCount = rng.RanngeInclusive(Constants.MIN_ITEMS_PER_ROOM, Constants.MAX_ITEMS_PER_ROOM);
+            var itemCount = rng.RangeInclusive(Constants.MIN_ITEMS_PER_ROOM, Constants.MAX_ITEMS_PER_ROOM);
 
             for (int i = 0; i < itemCount; i++)
             {
                 var randomPos = room.RandomPosition();
 
-                var canPlace = false;
-
-                while (!canPlace)
-                {
-                    var existingItem = world.GetEntityOnCell(randomPos);
-                    if (existingItem != null) continue;
-
-                    var existingEntity = world.GetEntityOnCell(randomPos);
-                    if (existingEntity != null) continue;
-
-                    var existingStairs = world.WorldGrid[randomPos.x, randomPos.y].TileType == TileType.Stairs;
-                    if (existingStairs) continue;
-
-                    canPlace = true;
-                }
+                while (!CanPlace(randomPos)) { }
 
                 var item = rng.GetRandomElement(items);
                 var itemClone = item.Clone(randomPos);
@@ -383,5 +370,39 @@ public class WorldGenerator(World world)
                 world.Items.Add(itemClone);
             }
         }
+    }
+
+    private void SpawnEnemies(Random rng, Room[] remainingRooms)
+    {
+        var enemies = EnemyDatabase.Enemies;
+
+        foreach (var room in remainingRooms)
+        {
+            var enemyCount = rng.RangeInclusive(Constants.MIN_ENEMIES_PER_ROOM, Constants.MAX_ENEMIES_PER_ROOM);
+
+            for (int i = 0; i < enemyCount; i++)
+            {
+                var randomPos = room.RandomPosition();
+
+                while (!CanPlace(randomPos)) { }
+
+                var enemy = rng.GetRandomElement(enemies);
+                var enemyClone = enemy.Clone(randomPos);
+
+                world.Entities.Add(enemyClone);
+            }
+        }
+    }
+
+    private bool CanPlace(Vector2Int pos)
+    {
+        var existingItem = world.GetEntityOnCell(pos);
+        if (existingItem != null) return false;
+
+        var existingEntity = world.GetEntityOnCell(pos);
+        if (existingEntity != null) return false;
+
+        var existingStairs = world.WorldGrid[pos.x, pos.y].TileType == TileType.Stairs;
+        return !existingStairs;
     }
 }

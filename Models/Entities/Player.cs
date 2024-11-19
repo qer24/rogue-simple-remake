@@ -37,5 +37,6 @@ public class Player(string name, Vector2Int position) : Entity(name, position)
         Armor += 1;
 
         Logger.Log($"{Name} has leveled up! New stats: Health: {MaxHealth}, Strength: {Strength}, Armour: {Armor}");
+        UiMessage.Instance.ShowMessage("                Level up!", 5, true);
     }
 }

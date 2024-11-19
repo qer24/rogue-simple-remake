@@ -14,12 +14,13 @@ public abstract class Entity : IRenderable
     public int Strength = -1;
     public int Armor = -1;
 
-    public char Character { get; private set; }
-    public ConsoleColor Color { get; private set; }
+    public char Character { get; protected set; }
+    public ConsoleColor Color { get; protected set; }
 
     public virtual bool IsVisible(World world)
     {
-        return false;
+        var cell = world.GetCell(Position);
+        return cell is { Visible: true, Revealed: true };
     }
 
     protected Entity(string name, Vector2Int position)
@@ -33,7 +34,7 @@ public abstract class Entity : IRenderable
     /// <summary>
     /// Load stats from json file associated with entity.
     /// </summary>
-    private void LoadStats()
+    protected virtual void LoadStats()
     {
         var jsonString = File.ReadAllText($"Data/Entities/{Name}.json");
         var json = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonString);

@@ -63,11 +63,19 @@ public class PlayerController(World world, Player player) : Controller
     {
         var newPosition = player.Position + direction;
 
-        if (!world.CollisionCheck(newPosition))
+        // Check if new position is out of bounds or collides with a wall
+        if (world.CollisionCheck(newPosition)) return;
+
+        // Attack enemy if there is one on the cell
+        if (world.EnemyCheck(newPosition))
         {
-            player.Position = newPosition;
-            TryPickupItems(player.Position);
+            AttackEnemy(world.GetEntityOnCell(newPosition) as Enemy);
+            return;
         }
+
+        // Move player if there is no collision or enemy
+        player.Position = newPosition;
+        TryPickupItems(player.Position);
     }
 
     private void TryPickupItems(Vector2Int position)
@@ -84,5 +92,10 @@ public class PlayerController(World world, Player player) : Controller
         UiMessage.Instance.ShowMessage(item.PickupMessage, 5);
 
         world.Items.Remove(item);
+    }
+
+    private void AttackEnemy(Enemy enemy)
+    {
+        world.Attack(player, enemy);
     }
 }

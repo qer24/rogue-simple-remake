@@ -1,4 +1,5 @@
 ﻿using RogueProject.Controllers;
+using RogueProject.Models.Entities;
 using RogueProject.Views;
 using RogueProject.Utils;
 
@@ -10,6 +11,8 @@ public class World
     public WorldCell[,] WorldGrid;
     public List<Entity> Entities;
     public List<Item> Items;
+
+    public Player Player => (Player)Entities[0];
 
     /// <summary>
     /// Procedurally generates the world, if regenerate is true, the player reference is kept.
@@ -34,7 +37,7 @@ public class World
     /// </summary>
     public WorldCell GetPlayercell()
     {
-        return WorldGrid[Entities[0].Position.x, Entities[0].Position.y];
+        return WorldGrid[Player.Position.x, Player.Position.y];
     }
 
     /// <summary>
@@ -213,11 +216,87 @@ public class World
         var x = pos.x;
         var y = pos.y;
 
+        // check if out of bounds
+        if (x < 0 || x >= Constants.WORLD_SIZE.x || y < 0 || y >= Constants.WORLD_SIZE.y)
+        {
+            return true;
+        }
+
         var tileType = WorldGrid[x, y].TileType;
 
         return tileType is TileType.WallTop
             or TileType.WallBottom
             or TileType.WallVertical
             or TileType.Empty;
+    }
+
+    /// <summary>
+    /// Returns true if the given position is an enemy.
+    /// </summary>
+    /// <param name="pos"></param>
+    public bool EnemyCheck(Vector2Int pos)
+    {
+        var x = pos.x;
+        var y = pos.y;
+
+        var entity = Entities.FirstOrDefault(e => e.Position.x == x && e.Position.y == y);
+
+        return entity is Enemy;
+    }
+
+    public void Attack(Entity attacker, Entity target)
+    {
+        var attackDamage = CalculateDamage(attacker.Strength, target.Armor);
+        var defenceDamage = CalculateDamage(target.Strength, attacker.Armor);
+
+        target.ChangeHealth(-attackDamage);
+        attacker.ChangeHealth(-defenceDamage);
+
+        void KillEntity(Entity entity, int damage)
+        {
+            Entities.Remove(entity);
+            UiMessage.Instance.ShowMessage($"      {entity.Name} -{damage} HP, {entity.Name} has been defeated", 5);
+
+            if (entity is Enemy enemy)
+            {
+                Player.AddExperience(enemy.Experience);
+                Player.Gold += enemy.Gold;
+            }
+        }
+
+        if (target.Health <= 0)
+        {
+            KillEntity(target, defenceDamage);
+        }
+        else if (attacker.Health <= 0)
+        {
+            KillEntity(attacker, attackDamage);
+        }
+        else
+        {
+            UiMessage.Instance.ShowMessage($"      {target.Name} -{attackDamage} HP, {attacker.Name} -{defenceDamage} HP", 5);
+        }
+    }
+
+    private static int CalculateDamage(float strength, float armor)
+    {
+        // Calculate armor effectiveness
+        float damageReduction = 1 - 1 / (1 + armor * Constants.ARMOR_SCALING_FACTOR);
+
+        // Apply armor penetration based on strength difference
+        if (strength > armor)
+        {
+            float penetration = (strength - armor) * Constants.PENETRATION_FACTOR;
+            damageReduction = Math.Max(0, damageReduction - penetration * Constants.ARMOR_SCALING_FACTOR);
+        }
+
+        // Cap the damage reduction
+        damageReduction = Math.Min(damageReduction, Constants.MAX_DAMAGE_REDUCTION);
+
+        // Calculate final damage and round to nearest integer
+        float finalDamage = strength * (1 - damageReduction);
+
+        // Round to nearest integer and ensure damage is never negative
+        return Math.Max(0, (int)Math.Round(finalDamage));
     }
 }
