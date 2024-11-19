@@ -8,7 +8,7 @@ public class WorldGenerator(World world)
     private Entity _player;
     private Vector2Int _playerStartPos;
 
-    private int _floor = 1;
+    private static int _floor = 1;
 
     // rooms i, j are neighbours if _neighbourMatrix[i, j] is true
     public readonly bool[,] NeighbourMatrix = new bool[9, 9]
@@ -386,6 +386,9 @@ public class WorldGenerator(World world)
         }
     }
 
+    /// <summary>
+    /// Spawns enemies in the world.
+    /// </summary>
     private void SpawnEnemies(Random rng, Room[] remainingRooms)
     {
         var enemies = EnemyDatabase.Enemies;
@@ -413,6 +416,9 @@ public class WorldGenerator(World world)
         }
     }
 
+    /// <summary>
+    /// Checks if a position is valid for placing an entity/item.
+    /// </summary>
     private bool CanPlace(Vector2Int pos)
     {
         var existingItem = world.GetEntityOnCell(pos);

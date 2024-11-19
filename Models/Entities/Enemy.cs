@@ -34,7 +34,7 @@ public class Enemy(string name, Vector2Int position) : Entity(name, position)
 
     public void ScaleStats(int floorNumber)
     {
-        var scaleFactor = 1 + floorNumber * 0.15f;
+        var scaleFactor = 1 + floorNumber * 0.2f;
 
         MaxHealth = (int)(MaxHealth * scaleFactor);
         Health = MaxHealth;
