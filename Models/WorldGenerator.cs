@@ -22,7 +22,7 @@ public class WorldGenerator(World world)
         { false, false, false, false, false, true,  false, true,  false }
     };
 
-    private static readonly int MIN_ITEMS_PER_ROOM = 0;
+    private static readonly int MIN_ITEMS_PER_ROOM = 1;
     private static readonly int MAX_ITEMS_PER_ROOM = 2;
 
     /// <summary>
@@ -373,6 +373,9 @@ public class WorldGenerator(World world)
 
                     var existingEntity = world.GetEntityOnCell(randomPos);
                     if (existingEntity != null) continue;
+
+                    var existingStairs = world.WorldGrid[randomPos.x, randomPos.y].TileType == TileType.Stairs;
+                    if (existingStairs) continue;
 
                     canPlace = true;
                 }

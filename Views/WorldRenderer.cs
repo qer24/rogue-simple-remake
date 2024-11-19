@@ -20,7 +20,7 @@ public class WorldRenderer(World world) : Renderer
             {
                 var renderable = world.GetRenderableOnCell(x, y);
 
-                if (renderable != null)
+                if (renderable != null && renderable.IsVisible(world))
                 {
                     var character = renderable.Character;
                     var color = renderable.Color;

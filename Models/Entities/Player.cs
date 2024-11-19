@@ -11,7 +11,21 @@ public class Player(string name, Vector2Int position) : Entity(name, position)
 
     public int Gold;
 
-    public void LevelUp()
+    public override bool IsVisible(World world)
+    {
+        return true;
+    }
+
+    public void AddExperience(int amount)
+    {
+        Experience += amount;
+        if (Experience >= ExperienceToNextLevel)
+        {
+            LevelUp();
+        }
+    }
+
+    private void LevelUp()
     {
         Level++;
         Experience = 0;
@@ -24,14 +38,5 @@ public class Player(string name, Vector2Int position) : Entity(name, position)
         Armor += 1;
 
         Logger.Log($"{Name} has leveled up! New stats: Health: {MaxHealth}, Strength: {Strength}, Armour: {Armor}");
-    }
-
-    public void AddExperience(int amount)
-    {
-        Experience += amount;
-        if (Experience >= ExperienceToNextLevel)
-        {
-            LevelUp();
-        }
     }
 }

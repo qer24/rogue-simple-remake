@@ -17,6 +17,11 @@ public abstract class Entity : IRenderable
     public char Character { get; private set; }
     public ConsoleColor Color { get; private set; }
 
+    public virtual bool IsVisible(World world)
+    {
+        return false;
+    }
+
     protected Entity(string name, Vector2Int position)
     {
         Name = name;

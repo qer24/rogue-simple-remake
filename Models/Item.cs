@@ -28,6 +28,11 @@ public class Item : IRenderable
         return new Item(Name, position);
     }
 
+    public bool IsVisible(World world)
+    {
+        return world.WorldGrid[Position.x, Position.y].Visible;
+    }
+
     /// <summary>
     /// Load stats from json file associated with item.
     /// </summary>
@@ -35,9 +40,6 @@ public class Item : IRenderable
     {
         var jsonString = File.ReadAllText($"Data/Items/{Name}.json");
         var json = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonString);
-
-        using var document = JsonDocument.Parse(jsonString);
-        var root = document.RootElement;
 
         Character = json["Character"].GetString()![0];
         Color = (ConsoleColor)json["Color"].GetString().ToInt();
@@ -48,8 +50,6 @@ public class Item : IRenderable
         {
             return;
         }
-
-        Logger.Log(effects.GetType().ToString());
 
         var effectsList = new List<Action<Player>>();
 

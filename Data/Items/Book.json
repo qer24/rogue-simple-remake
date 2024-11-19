@@ -1,0 +1,8 @@
+﻿{
+  "Character": "b",
+  "Color": "14",
+  "Message": "You read the book and learn something new.",
+  "Effects" : {
+    "Experience" : "8"
+  }
+}
