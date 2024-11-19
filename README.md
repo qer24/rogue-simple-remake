@@ -28,20 +28,20 @@ dotnet build --configuration Release
 
 # Usage
 Launch the executable located at:
-```
-bin/Release/net8.0/RogueProject.exe
-```
+
+> bin/Release/net8.0/RogueProject.exe
 
 You can play the entire game with just arrow keys to move. 
 
 Collect items and fight enemies and try to get as far as possible.
 
 Cheat codes:
-```
-R - reveal map
-G - generate new floor
-K - deal 999 damage to player
-```
+
+> R - reveal map
+> 
+> G - generate new floor
+> 
+> K - deal 999 damage to player
 
 # Contributing
 Feel free to fork the repository and submit pull requests with improvements or bug fixes.
