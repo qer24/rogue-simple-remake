@@ -52,5 +52,7 @@ Original Rogue (1980) by Michael Toy and Glenn Wichman
 
 [WindowUtility.cs](https://stackoverflow.com/a/67010648) by Quickz
 
+Proc Gen libraries by BlueRaja
+
 # License 
 [MIT](LICENSE)
