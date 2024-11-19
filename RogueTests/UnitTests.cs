@@ -136,4 +136,28 @@ public class Tests
 
         Assert.That(player, Is.Not.Null);
     }
+
+    [Test]
+    public void AttackTest()
+    {
+        var world = new World();
+        world.GenerateWorld(false);
+
+        var player = world.Entities[0] as Player;
+        var enemy = world.Entities[1] as Enemy;
+
+        enemy?.ChangeHealth(-(enemy.MaxHealth - 1));
+
+        world.Attack(player, enemy);
+
+        Assert.Multiple(() =>
+        {
+            // player should have more experience and gold
+            // enemy should be null
+
+            Assert.That(player?.Experience, Is.GreaterThan(0));
+            Assert.That(player?.Gold, Is.GreaterThan(0));
+            Assert.That(world.Entities, Does.Not.Contain(enemy));
+        });
+    }
 }

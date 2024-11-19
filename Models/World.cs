@@ -244,6 +244,9 @@ public class World
         return entity is Enemy;
     }
 
+    /// <summary>
+    /// Attack between two entities.
+    /// </summary>
     public void Attack(Entity attacker, Entity target)
     {
         var attackDamage = CalculateDamage(attacker.Strength, target.Armor);
