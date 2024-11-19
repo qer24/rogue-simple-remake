@@ -8,6 +8,8 @@ public class WorldGenerator(World world)
     private Entity _player;
     private Vector2Int _playerStartPos;
 
+    private int _floor = 1;
+
     // rooms i, j are neighbours if _neighbourMatrix[i, j] is true
     public readonly bool[,] NeighbourMatrix = new bool[9, 9]
     {
@@ -27,6 +29,15 @@ public class WorldGenerator(World world)
     /// </summary>
     public void GenerateWorld(bool regenerate)
     {
+        if (regenerate)
+        {
+            _floor++;
+        }
+        else
+        {
+            _floor = 1;
+        }
+
         InitWorld();
 
         var rooms = new Room[9];
@@ -362,7 +373,10 @@ public class WorldGenerator(World world)
             {
                 var randomPos = room.RandomPosition();
 
-                while (!CanPlace(randomPos)) { }
+                while (!CanPlace(randomPos))
+                {
+                    randomPos = room.RandomPosition();
+                }
 
                 var item = rng.GetRandomElement(items);
                 var itemClone = item.Clone(randomPos);
@@ -384,10 +398,15 @@ public class WorldGenerator(World world)
             {
                 var randomPos = room.RandomPosition();
 
-                while (!CanPlace(randomPos)) { }
+                while (!CanPlace(randomPos))
+                {
+                    randomPos = room.RandomPosition();
+                }
 
                 var enemy = rng.GetRandomElement(enemies);
                 var enemyClone = enemy.Clone(randomPos);
+
+                enemyClone.ScaleStats(_floor);
 
                 world.Entities.Add(enemyClone);
             }

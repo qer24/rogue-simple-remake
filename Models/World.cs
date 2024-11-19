@@ -266,11 +266,11 @@ public class World
 
         if (target.Health <= 0)
         {
-            KillEntity(target, defenceDamage);
+            KillEntity(target, attackDamage);
         }
         else if (attacker.Health <= 0)
         {
-            KillEntity(attacker, attackDamage);
+            KillEntity(attacker, defenceDamage);
         }
         else
         {

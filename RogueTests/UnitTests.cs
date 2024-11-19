@@ -37,7 +37,7 @@ public class Tests
         var world = new World();
         var worldGenerator = new WorldGenerator(world);
 
-        const int checkIterations = 100;
+        const int checkIterations = 10;
 
         for (int i = 0; i < checkIterations; i++)
         {

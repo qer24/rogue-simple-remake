@@ -31,4 +31,18 @@ public class Enemy(string name, Vector2Int position) : Entity(name, position)
         Experience = json["Experience"].ToInt();
         Gold = json["Gold"].ToInt();
     }
+
+    public void ScaleStats(int floorNumber)
+    {
+        var scaleFactor = 1 + floorNumber * 0.15f;
+
+        MaxHealth = (int)(MaxHealth * scaleFactor);
+        Health = MaxHealth;
+
+        Strength = (int)(Strength * scaleFactor);
+        Armor = (int)(Armor * scaleFactor);
+
+        Experience = (int)(Experience * scaleFactor);
+        Gold = (int)(Gold * scaleFactor);
+    }
 }
