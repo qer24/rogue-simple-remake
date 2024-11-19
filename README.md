@@ -7,6 +7,9 @@ A very stripped version of Rogue (1980) made for a school project in C# for .NET
 - A* Pathfinding for connecting rooms
 - Minimalist roguelike gameplay
 
+# Release
+You can download the precompiled executable in Releases, click [here](https://github.com/qer24/rogue-simple-remake/releases/latest) for the latest one. 
+
 # Prerequisites
 
 - .NET 8.0 SDK
@@ -40,6 +43,10 @@ Feel free to fork the repository and submit pull requests with improvements or b
 
 # Acknowledgments
 Original Rogue (1980) by Michael Toy and Glenn Wichman
+
+[FastConsole.cs](https://github.com/crowfingers/FastConsole/blob/master/FastConsole.cs) by crowfingers
+
+[WindowUtility.cs](https://stackoverflow.com/a/67010648) by Quickz
 
 # License 
 [MIT](LICENSE)
