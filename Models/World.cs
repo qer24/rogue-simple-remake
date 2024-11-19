@@ -257,11 +257,11 @@ public class World
 
         void KillEntity(Entity entity, int damage)
         {
-            Entities.Remove(entity);
             UiMessage.Instance.ShowMessage($"      {entity.Name} -{damage} HP, {entity.Name} has been defeated", 5);
 
             if (entity is Enemy enemy)
             {
+                Entities.Remove(entity);
                 Player.AddExperience(enemy.Experience);
                 Player.Gold += enemy.Gold;
             }

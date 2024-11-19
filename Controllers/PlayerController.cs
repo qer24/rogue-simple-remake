@@ -39,6 +39,9 @@ public class PlayerController(World world, Player player) : Controller
             case ConsoleKey.G:
                 world.GenerateWorld(true);
                 return;
+            case ConsoleKey.K:
+                player.ChangeHealth(-999);
+                return;
             default:
                 _movementDirection = key switch
                 {

@@ -9,6 +9,8 @@ public class WorldController : Controller
     private readonly World _world;
     private readonly HashSet<Vector2Int> _visibleCells = [];
 
+    public bool PlayerDead;
+
     public WorldController(World world)
     {
         _world = world;
@@ -20,6 +22,7 @@ public class WorldController : Controller
         PlayerLineOfSight();
         PlayerReveal();
         PlayerStairs();
+        PlayerDeath();
     }
 
     /// <summary>
@@ -106,5 +109,19 @@ public class WorldController : Controller
 
         _world.GenerateWorld(true);
         Update();
+    }
+
+    /// <summary>
+    /// Check if player is dead and set PlayerDead to true.
+    /// </summary>
+    private void PlayerDeath()
+    {
+        var player = _world.Entities[0];
+
+        if (player.Health <= 0)
+        {
+            PlayerDead = true;
+            Logger.Log("Player has died!");
+        }
     }
 }

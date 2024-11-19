@@ -28,7 +28,7 @@ public class Player(string name, Vector2Int position) : Entity(name, position)
     {
         Level++;
         Experience = 0;
-        ExperienceToNextLevel = (int)MathF.Floor(ExperienceToNextLevel * 1.2f);
+        ExperienceToNextLevel = (int)MathF.Floor(ExperienceToNextLevel * 1.5f);
 
         MaxHealth += 5;
         Health = MaxHealth;
