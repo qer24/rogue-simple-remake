@@ -5,8 +5,7 @@ A very stripped version of Rogue (1980) made for a school project in C# 12.0 for
 
 # Features
 - Faithful 1:1 room placement inspired by the original Rogue
-- Kruskal's Algorithm for hallway placement
-- A* Pathfinding for connecting rooms
+- Kruskal's Algorithm and A* Pathfinding for hallway placement
 - Player line of sight effect using Brasenham's line algorithm.
 - Minimalist roguelike gameplay
 - Unit tests checking various elements of the game.
