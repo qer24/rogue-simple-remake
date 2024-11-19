@@ -1,5 +1,7 @@
 # Rogue Remake
-A very stripped version of Rogue (1980) made for a school project in C# for .NET 8.0.
+A very stripped version of Rogue (1980) made for a school project in C# 12.0 for .NET 8.0.
+
+![obraz](https://github.com/user-attachments/assets/2adb2305-9e97-4afa-9b87-99e35a398ed7)
 
 # Features
 - Faithful 1:1 room placement inspired by the original Rogue
@@ -14,6 +16,7 @@ You can download the precompiled executable in Releases, click [here](https://gi
 
 # Prerequisites
 
+- C# 12.0
 - .NET 8.0 SDK
 - Windows, macOS, or Linux with .NET 8.0 runtime support
 
