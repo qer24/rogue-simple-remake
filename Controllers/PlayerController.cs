@@ -66,6 +66,23 @@ public class PlayerController(World world, Player player) : Controller
         if (!world.CollisionCheck(newPosition))
         {
             player.Position = newPosition;
+            TryPickupItems(player.Position);
         }
+    }
+
+    private void TryPickupItems(Vector2Int position)
+    {
+        var item = world.GetItemOnCell(position);
+        if (item == null)
+        {
+            return;
+        }
+
+        Logger.Log($"Picked up {item.Name}");
+
+        item.ApplyEffect(player);
+        UiMessage.Instance.ShowMessage(item.PickupMessage, 5);
+
+        world.Items.Remove(item);
     }
 }

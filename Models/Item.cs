@@ -30,7 +30,8 @@ public class Item : IRenderable
 
     public bool IsVisible(World world)
     {
-        return world.WorldGrid[Position.x, Position.y].Visible;
+        var cell = world.GetCell(Position);
+        return cell is { Visible: true, Revealed: true };
     }
 
     /// <summary>
@@ -45,6 +46,8 @@ public class Item : IRenderable
         Color = (ConsoleColor)json["Color"].GetString().ToInt();
 
         PickupMessage = json["Message"].GetString();
+
+        _effects = [];
 
         if (!json.TryGetValue("Effects", out var effects))
         {
@@ -86,6 +89,8 @@ public class Item : IRenderable
 
     public void ApplyEffect(Player player)
     {
+        Logger.Log(PickupMessage);
+        Logger.Log($"Applying effects of {Name} to {player.Name}");
         foreach (var effect in _effects)
         {
             effect(player);

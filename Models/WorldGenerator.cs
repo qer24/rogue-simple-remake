@@ -22,9 +22,6 @@ public class WorldGenerator(World world)
         { false, false, false, false, false, true,  false, true,  false }
     };
 
-    private static readonly int MIN_ITEMS_PER_ROOM = 1;
-    private static readonly int MAX_ITEMS_PER_ROOM = 2;
-
     /// <summary>
     /// Procedural generation of the world
     /// </summary>
@@ -358,7 +355,7 @@ public class WorldGenerator(World world)
 
         foreach (var room in remainingRooms)
         {
-            var itemCount = rng.Range(MIN_ITEMS_PER_ROOM, MAX_ITEMS_PER_ROOM);
+            var itemCount = rng.RanngeInclusive(Constants.MIN_ITEMS_PER_ROOM, Constants.MAX_ITEMS_PER_ROOM);
 
             for (int i = 0; i < itemCount; i++)
             {

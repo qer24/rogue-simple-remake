@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using FastConsole;
+using RogueProject.Models;
 using RogueProject.Models.Entities;
 
 namespace RogueProject.Views;
@@ -15,19 +16,40 @@ public class UiRenderer(Player player) : Renderer
     {
         var y = Constants.WORLD_SIZE.y;
 
-        var uiString = new StringBuilder();
+        var playerUi = new StringBuilder();
 
-        uiString.Append($" Level:{player.Level}{TAB}");
-        uiString.Append($"Hp:{player.Health}/{player.MaxHealth}{TAB}");
-        uiString.Append($"Str:{player.Strength}{TAB}");
-        uiString.Append($"Gold:{player.Gold}{TAB}");
-        uiString.Append($"Armor:{player.Armor}{TAB}");
-        uiString.Append($"Exp:{player.Experience}/{player.ExperienceToNextLevel}{TAB}");
+        playerUi.Append($" Level:{player.Level}{TAB}");
+        playerUi.Append($"Hp:{player.Health}/{player.MaxHealth}{TAB}");
+        playerUi.Append($"Str:{player.Strength}{TAB}");
+        playerUi.Append($"Gold:{player.Gold}{TAB}");
+        playerUi.Append($"Armor:{player.Armor}{TAB}");
+        playerUi.Append($"Exp:{player.Experience}/{player.ExperienceToNextLevel}{TAB}");
 
-        for (int x = 0; x < uiString.Length; x++)
+        for (int x = 0; x < playerUi.Length; x++)
         {
-            var character = uiString[x];
+            var character = playerUi[x];
             FConsole.SetChar(x, y, character, Constants.FOREGROUND_COLOR, Constants.BACKGROUND_COLOR);
+        }
+
+        y++;
+
+        var uiMessage = UiMessage.Instance;
+
+        var message = uiMessage.Message;
+        for (int x = 0; x < message.Length; x++)
+        {
+            var character = message[x];
+            var xPosition = x + Constants.WORLD_SIZE.x / 4;
+            FConsole.SetChar(xPosition, y, character, Constants.FOREGROUND_COLOR, Constants.BACKGROUND_COLOR);
+        }
+
+        if (uiMessage.RemainingDuration <= 0)
+        {
+            uiMessage.Message = "                                                  ";
+        }
+        else
+        {
+            uiMessage.RemainingDuration--;
         }
     }
 }

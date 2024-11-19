@@ -13,6 +13,9 @@ public static class Constants
     public const int MAX_GONE_ROOMS = 3;
     public const int RANDOM_CONNECTION_COUNT = 3;
 
+    public const int MIN_ITEMS_PER_ROOM = 0;
+    public const int MAX_ITEMS_PER_ROOM = 2;
+
     // World visibility
     public const int FLOOR_REVEAL_DISTANCE = 6;
 }

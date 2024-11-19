@@ -8,7 +8,6 @@ public class Player(string name, Vector2Int position) : Entity(name, position)
     public int Experience { get; private set; }
     public int ExperienceToNextLevel { get; private set; } = 10;
 
-
     public int Gold;
 
     public override bool IsVisible(World world)
@@ -29,7 +28,7 @@ public class Player(string name, Vector2Int position) : Entity(name, position)
     {
         Level++;
         Experience = 0;
-        ExperienceToNextLevel *= (int)MathF.Floor(ExperienceToNextLevel * 1.2f);
+        ExperienceToNextLevel = (int)MathF.Floor(ExperienceToNextLevel * 1.2f);
 
         MaxHealth += 5;
         Health = MaxHealth;
