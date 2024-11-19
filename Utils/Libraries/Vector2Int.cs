@@ -50,6 +50,8 @@ public struct Vector2Int
     // Returns the squared length of this vector (RO).
     public int sqrMagnitude => x * x + y * y;
 
+    public static Vector2Int zero => new(0, 0);
+
     // Returns the distance between /a/ and /b/.
     public static float Distance(Vector2Int a, Vector2Int b)
     {

@@ -1,0 +1,8 @@
+﻿{
+  "Character" : "&",
+  "Color" : "4",
+  "Effects" : {
+    "Health" : "5"
+  },
+  "Message" : "You drink the potion and feel refreshed."
+}

@@ -3,4 +3,11 @@
 public static class RandomExtensions
 {
     public static int Range(this System.Random rng, int min, int max) => rng.Next(min, max);
+
+    public static T GetRandomElement<T>(this Random rng, IEnumerable<T> input)
+    {
+        var enumerable = input as T[] ?? input.ToArray();
+
+        return enumerable[rng.Range(0, enumerable.Length)];
+    }
 }

@@ -22,6 +22,9 @@ public class WorldGenerator(World world)
         { false, false, false, false, false, true,  false, true,  false }
     };
 
+    private static readonly int MIN_ITEMS_PER_ROOM = 0;
+    private static readonly int MAX_ITEMS_PER_ROOM = 2;
+
     /// <summary>
     /// Procedural generation of the world
     /// </summary>
@@ -43,6 +46,8 @@ public class WorldGenerator(World world)
 
         SpawnPlayer(rng, remainingRooms, out var playerStartRoom, regenerate);
         PlaceStairs(rng, rooms, remainingRooms, playerStartRoom);
+
+        SpawnItems(rng, remainingRooms);
     }
 
     private void InitWorld()
@@ -53,6 +58,7 @@ public class WorldGenerator(World world)
         world.WorldGrid = new WorldCell[sizeX, sizeY];
         if (world.Entities != null) _player = world.Entities[0];
         world.Entities = [];
+        world.Items = [];
 
         for (int x = 0; x < sizeX; x++)
         {
@@ -341,5 +347,41 @@ public class WorldGenerator(World world)
         var pos = stairsRoom.RandomPosition();
 
         world.WorldGrid[pos.x, pos.y].TileType = TileType.Stairs;
+    }
+
+    /// <summary>
+    /// Spawns items in the world.
+    /// </summary>
+    private void SpawnItems(Random rng, Room[] remainingRooms)
+    {
+        var items = ItemDatabase.Items;
+
+        foreach (var room in remainingRooms)
+        {
+            var itemCount = rng.Range(MIN_ITEMS_PER_ROOM, MAX_ITEMS_PER_ROOM);
+
+            for (int i = 0; i < itemCount; i++)
+            {
+                var randomPos = room.RandomPosition();
+
+                var canPlace = false;
+
+                while (!canPlace)
+                {
+                    var existingItem = world.GetEntityOnCell(randomPos);
+                    if (existingItem != null) continue;
+
+                    var existingEntity = world.GetEntityOnCell(randomPos);
+                    if (existingEntity != null) continue;
+
+                    canPlace = true;
+                }
+
+                var item = rng.GetRandomElement(items);
+                var itemClone = item.Clone(randomPos);
+
+                world.Items.Add(itemClone);
+            }
+        }
     }
 }

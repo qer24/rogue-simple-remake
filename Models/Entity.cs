@@ -8,7 +8,7 @@ public abstract class Entity
     public readonly string Name;
     public Vector2Int Position;
 
-    public int Health = -1;
+    public int Health { get; protected set; } = -1;
     public int MaxHealth = -1;
 
     public int Strength = -1;
@@ -40,7 +40,12 @@ public abstract class Entity
         Armor = json["Armor"].ToInt();
 
         Character = json["Character"][0];
-
         Color = (ConsoleColor)json["Color"].ToInt();
+    }
+
+    public void ChangeHealth(int amount)
+    {
+        Health += amount;
+        Health = Math.Clamp(Health, 0, MaxHealth);
     }
 }

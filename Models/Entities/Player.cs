@@ -4,11 +4,12 @@ namespace RogueProject.Models.Entities;
 
 public class Player(string name, Vector2Int position) : Entity(name, position)
 {
-    public int Level = 1;
-    public int Experience = 0;
-    public int ExperienceToNextLevel = 10;
+    public int Level { get; private set; } = 1;
+    public int Experience { get; private set; }
+    public int ExperienceToNextLevel { get; private set; } = 10;
 
-    public int Gold = 0;
+
+    public int Gold;
 
     public void LevelUp()
     {
@@ -23,5 +24,14 @@ public class Player(string name, Vector2Int position) : Entity(name, position)
         Armor += 1;
 
         Logger.Log($"{Name} has leveled up! New stats: Health: {MaxHealth}, Strength: {Strength}, Armour: {Armor}");
+    }
+
+    public void AddExperience(int amount)
+    {
+        Experience += amount;
+        if (Experience >= ExperienceToNextLevel)
+        {
+            LevelUp();
+        }
     }
 }

@@ -9,6 +9,7 @@ public class World
     public Room[] Rooms;
     public WorldCell[,] WorldGrid;
     public List<Entity> Entities;
+    public List<Item> Items;
 
     /// <summary>
     /// Procedurally generates the world, if regenerate is true, the player reference is kept.
@@ -34,6 +35,16 @@ public class World
     public WorldCell GetPlayercell()
     {
         return WorldGrid[Entities[0].Position.x, Entities[0].Position.y];
+    }
+
+    public Entity GetEntityOnCell(Vector2Int position)
+    {
+        return Entities.FirstOrDefault(e => e.Position == position);
+    }
+
+    public Item GetItemOnCell(Vector2Int position)
+    {
+        return Items.FirstOrDefault(i => i.Position == position);
     }
 
     /// <summary>
