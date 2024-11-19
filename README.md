@@ -5,7 +5,9 @@ A very stripped version of Rogue (1980) made for a school project in C# for .NET
 - Faithful 1:1 room placement inspired by the original Rogue
 - Kruskal's Algorithm for hallway placement
 - A* Pathfinding for connecting rooms
+- Player line of sight effect using Brasenham's line algorithm.
 - Minimalist roguelike gameplay
+- Unit tests checking various elements of the game.
 
 # Release
 You can download the precompiled executable in Releases, click [here](https://github.com/qer24/rogue-simple-remake/releases/latest) for the latest one. 
