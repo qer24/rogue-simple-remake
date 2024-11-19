@@ -40,3 +40,6 @@ Feel free to fork the repository and submit pull requests with improvements or b
 
 # Acknowledgments
 Original Rogue (1980) by Michael Toy and Glenn Wichman
+
+# License 
+[MIT](LICENSE)
