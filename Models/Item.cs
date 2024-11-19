@@ -4,13 +4,13 @@ using RogueProject.Utils;
 
 namespace RogueProject.Models;
 
-public class Item
+public class Item : IRenderable
 {
     public readonly string Name;
     public Vector2Int Position;
 
-    public char Character;
-    public ConsoleColor Color;
+    public char Character { get; private set; }
+    public ConsoleColor Color { get; private set; }
     public string PickupMessage;
 
     private Action<Player>[] _effects;

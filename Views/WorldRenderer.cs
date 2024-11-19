@@ -18,12 +18,12 @@ public class WorldRenderer(World world) : Renderer
         {
             for (int x = 0; x < sizeX; x++)
             {
-                var entity = world.Entities.FirstOrDefault(e => e.Position.x == x && e.Position.y == y);
+                var renderable = world.GetRenderableOnCell(x, y);
 
-                if (entity != null)
+                if (renderable != null)
                 {
-                    var character = entity.Character;
-                    var color = entity.Color;
+                    var character = renderable.Character;
+                    var color = renderable.Color;
                     FConsole.SetChar(x, y, character, color, Constants.BACKGROUND_COLOR);
                 }
                 else

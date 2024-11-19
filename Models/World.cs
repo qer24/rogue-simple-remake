@@ -37,14 +37,46 @@ public class World
         return WorldGrid[Entities[0].Position.x, Entities[0].Position.y];
     }
 
+    /// <summary>
+    /// Get entity on cell based on position.
+    /// </summary>
     public Entity GetEntityOnCell(Vector2Int position)
     {
         return Entities.FirstOrDefault(e => e.Position == position);
     }
 
+    /// <summary>
+    /// Get entity on cell based on position.
+    /// </summary>
+    public Entity GetEntityOnCell(int x, int y)
+    {
+        return Entities.FirstOrDefault(e => e.Position.x == x && e.Position.y == y);
+    }
+
+    /// <summary>
+    /// Get item on cell based on position.
+    /// </summary>
     public Item GetItemOnCell(Vector2Int position)
     {
         return Items.FirstOrDefault(i => i.Position == position);
+    }
+
+    /// <summary>
+    /// Get item on cell based on position.
+    /// </summary>
+    public Item GetItemOnCell(int x, int y)
+    {
+        return Items.FirstOrDefault(i => i.Position.x == x && i.Position.y == y);
+    }
+
+    public IRenderable GetRenderableOnCell(Vector2Int position)
+    {
+        return (IRenderable)GetEntityOnCell(position) ?? GetItemOnCell(position);
+    }
+
+    public IRenderable GetRenderableOnCell(int x, int y)
+    {
+        return (IRenderable)GetEntityOnCell(x, y) ?? GetItemOnCell(x, y);
     }
 
     /// <summary>

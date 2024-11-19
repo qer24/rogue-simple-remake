@@ -3,7 +3,7 @@ using RogueProject.Utils;
 
 namespace RogueProject.Models;
 
-public abstract class Entity
+public abstract class Entity : IRenderable
 {
     public readonly string Name;
     public Vector2Int Position;
@@ -14,8 +14,8 @@ public abstract class Entity
     public int Strength = -1;
     public int Armor = -1;
 
-    public char Character;
-    public ConsoleColor Color;
+    public char Character { get; private set; }
+    public ConsoleColor Color { get; private set; }
 
     protected Entity(string name, Vector2Int position)
     {
