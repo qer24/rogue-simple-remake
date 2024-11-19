@@ -1,7 +1,7 @@
 # Rogue Remake
 A very stripped version of Rogue (1980) made for a school project in C# 12.0 for .NET 8.0.
 
-![obraz](https://github.com/user-attachments/assets/2adb2305-9e97-4afa-9b87-99e35a398ed7)
+![preview](https://github.com/user-attachments/assets/f6a5b7c8-e9ba-4647-ae4d-6c16589b6f63)
 
 # Features
 - Faithful 1:1 room placement inspired by the original Rogue
